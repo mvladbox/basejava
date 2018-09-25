@@ -1,10 +1,14 @@
-
 # Одиннадцатое занятие
 
-## Многопоточность. Параллельное выполнение.
+## Разбор Домашнего Задания-10 будет на следующем уроке
+
+## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) [1. Многопоточность. Параллельное выполнение.](https://drive.google.com/open?id=0B_4NpoQW1xfpSmVjRzl6c3ctTTA)
+[см. коммит Lesson11](https://github.com/JavaWebinar/basejava/blob/6a626f61722af844663860d1af284c53a9adf423/src/ru/javawebinar/basejava/MainConcurrency.java)
+ 
 ![Закон Мура](https://www.karlrupp.net/wp-content/uploads/2015/06/40-years-processor-trend.png)
 - <a href="https://ru.wikipedia.org/wiki/Закон_Мура">Закон Мура</a>
 - <a href="https://ru.wikipedia.org/wiki/Закон_Амдала">Закон Амдала</a>
+- [Фундаментальный поворот к параллелизму в программировании](https://habrahabr.ru/post/145432/)
 
 ![Concurrent vs Parallel](https://joearms.github.io/images/con_and_par.jpg)
 
@@ -12,7 +16,9 @@
 -  <a href="http://www.intuit.ru/studies/courses/16/16/lecture/27127">Потоки выполнения. Синхронизация.</a>
 -  <a href="http://www.intuit.ru/studies/courses/16/16/lecture/27127?page=4">Методы wait(), notify(), notifyAll() класса Object</a>
 
-## Ленивая инициализация, JMM
+## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) [2. Ленивая инициализация, JMM.](https://drive.google.com/open?id=0B_4NpoQW1xfpN0R6d29UVERxLWc)
+[см. коммит Lesson11](https://github.com/JavaWebinar/basejava/blob/6a626f61722af844663860d1af284c53a9adf423/src/ru/javawebinar/basejava/LazySingleton.java)
+
 - <a href="https://ru.wikipedia.org/wiki/Параллелизм_в_Java">Параллелизм в Java</a>
 - <a href="https://habrahabr.ru/post/27108/">Реализация Singleton в JAVA</a>
 - <a href="https://ru.wikipedia.org/wiki/Double_checked_locking">Double checked locking</a>
