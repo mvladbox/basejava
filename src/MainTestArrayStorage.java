@@ -21,6 +21,25 @@ public class MainTestArrayStorage {
 
         System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
 
+        System.out.println("\n");
+
+        // Проверка: get("uuid2") ссылается на объект r2
+        Resume r2_received = ARRAY_STORAGE.get("uuid2");
+        System.out.println("r2 " + ((r2 == r2_received) ? "==" : "!=") + " get(\"" + r2_received.getUuid() + "\")");
+
+        // Проверка: resumeNew является другим объектом, хотя имеет такой же UUID, как у r2
+        Resume resumeNew = new Resume();
+        resumeNew.setUuid("uuid2");
+        System.out.println("r2 " + ((r2 == resumeNew) ? "==" : "!=") + " resumeNew (\"" + resumeNew.getUuid() + "\")");
+
+        // Проверка: после обновления, get("uuid2") стал возвращать объект resumeNew, а не r2
+        ARRAY_STORAGE.update(resumeNew);
+        Resume resume = ARRAY_STORAGE.get("uuid2");
+        System.out.println("After update:");
+        System.out.println("resumeNew " + ((resumeNew == resume) ? "==" : "!=") + " get(\"" + resume.getUuid() + "\")");
+        Resume r2_received2 = ARRAY_STORAGE.get("uuid2");
+        System.out.println("r2 " + ((r2 == r2_received2) ? "==" : "!=") + " get(\"" + r2_received2.getUuid() + "\")");
+
         printAll();
         ARRAY_STORAGE.delete(r1.getUuid());
         printAll();
