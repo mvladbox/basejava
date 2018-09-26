@@ -2,17 +2,10 @@ package storage;
 
 import model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-
-    public void clear() {
-        Arrays.fill(storage, 0, size, null);
-        size = 0;
-    }
 
     public void save(Resume resume) {
         if (size == RESUME_MAX_COUNT) {
@@ -42,10 +35,6 @@ public class ArrayStorage extends AbstractArrayStorage {
         } else {
             System.out.println("ОШИБКА: Запрашиваемое резюме отсутствует");
         }
-    }
-
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
     }
 
     protected int getIndex(String uuid) {

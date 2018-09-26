@@ -2,6 +2,8 @@ package storage;
 
 import model.Resume;
 
+import java.util.Arrays;
+
 /**
  * Abstract array based storage for Resumes
  */
@@ -10,6 +12,11 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected Resume[] storage = new Resume[RESUME_MAX_COUNT];
     protected int size;
+
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
+    }
 
     public Resume get(String uuid) {
         int index = getIndex(uuid);
@@ -22,6 +29,10 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public int size() {
         return size;
+    }
+
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
     }
 
     protected abstract int getIndex(String uuid);

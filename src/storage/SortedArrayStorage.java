@@ -9,9 +9,6 @@ import java.util.Arrays;
  */
 public class SortedArrayStorage extends AbstractArrayStorage {
 
-    public void clear() {
-    }
-
     public void save(Resume resume) {
     }
 
@@ -19,10 +16,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     public void delete(String uuid) {
-    }
-
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
     }
 
     protected int getIndex(String uuid) {
