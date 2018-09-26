@@ -1,3 +1,7 @@
+package storage;
+
+import model.Resume;
+
 import java.util.Arrays;
 
 /**
@@ -8,12 +12,12 @@ public class ArrayStorage {
     private Resume[] storage = new Resume[RESUME_MAX_COUNT];
     private int size;
 
-    void clear() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    void save(Resume resume) {
+    public void save(Resume resume) {
         if (size == RESUME_MAX_COUNT) {
             System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" +
                     RESUME_MAX_COUNT + ")");
@@ -24,7 +28,7 @@ public class ArrayStorage {
         }
     }
 
-    void update(Resume resume) {
+    public void update(Resume resume) {
         int i = getIndex(resume.getUuid());
         if (i >= 0) {
             storage[i] = resume;
@@ -33,7 +37,7 @@ public class ArrayStorage {
         }
     }
 
-    Resume get(String uuid) {
+    public Resume get(String uuid) {
         int i = getIndex(uuid);
         if (i < 0) {
             System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
@@ -42,7 +46,7 @@ public class ArrayStorage {
         return storage[i];
     }
 
-    void delete(String uuid) {
+    public void delete(String uuid) {
         int i = getIndex(uuid);
         if (i >= 0) {
             storage[i] = storage[size - 1];
@@ -64,11 +68,11 @@ public class ArrayStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
+    public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
-    int size() {
+    public int size() {
         return size;
     }
 }

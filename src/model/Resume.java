@@ -1,5 +1,7 @@
+package model;
+
 /**
- * Initial resume class
+ * Resume class
  */
 public class Resume {
 
