@@ -4,7 +4,7 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private final int RESUME_MAX_COUNT = 10_000;
+    private static final int RESUME_MAX_COUNT = 10_000;
     private Resume[] storage = new Resume[RESUME_MAX_COUNT];
     private int size;
 
@@ -17,7 +17,7 @@ public class ArrayStorage {
         if (size == RESUME_MAX_COUNT) {
             System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" +
                     RESUME_MAX_COUNT + ")");
-        } else if (getIndex(resume.uuid) >= 0) {
+        } else if (getIndex(resume.getUuid()) >= 0) {
             System.out.println("ОШИБКА: Резюме с таким UUID уже сохранено");
         } else {
             storage[size++] = resume;
@@ -25,7 +25,7 @@ public class ArrayStorage {
     }
 
     void update(Resume resume) {
-        int i = getIndex(resume.uuid);
+        int i = getIndex(resume.getUuid());
         if (i >= 0) {
             storage[i] = resume;
         } else {
@@ -54,7 +54,7 @@ public class ArrayStorage {
 
     private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
