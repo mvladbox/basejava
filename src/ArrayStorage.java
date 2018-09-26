@@ -4,7 +4,8 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private static final int RESUME_MAX_COUNT = 10_000;
+    private Resume[] storage = new Resume[RESUME_MAX_COUNT];
     private int size;
 
     void clear() {
@@ -13,25 +14,47 @@ public class ArrayStorage {
     }
 
     void save(Resume resume) {
-        storage[size++] = resume;
-    }
-
-    Resume get(String uuid) {
-        int i = indexOf(uuid);
-        return (i >= 0) ? storage[i] : null;
-    }
-
-    void delete(String uuid) {
-        int i = indexOf(uuid);
-        if (i >= 0) {
-            storage[i] = storage[size - 1];
-            storage[--size] = null;
+        if (size == RESUME_MAX_COUNT) {
+            System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" +
+                    RESUME_MAX_COUNT + ")");
+        } else if (getIndex(resume.getUuid()) >= 0) {
+            System.out.println("ОШИБКА: Резюме с таким UUID уже сохранено");
+        } else {
+            storage[size++] = resume;
         }
     }
 
-    private int indexOf(String uuid) {
+    void update(Resume resume) {
+        int i = getIndex(resume.getUuid());
+        if (i >= 0) {
+            storage[i] = resume;
+        } else {
+            System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
+        }
+    }
+
+    Resume get(String uuid) {
+        int i = getIndex(uuid);
+        if (i < 0) {
+            System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
+            return null;
+        }
+        return storage[i];
+    }
+
+    void delete(String uuid) {
+        int i = getIndex(uuid);
+        if (i >= 0) {
+            storage[i] = storage[size - 1];
+            storage[--size] = null;
+        } else {
+            System.out.println("ОШИБКА: Запрашиваемое резюме отсутствует");
+        }
+    }
+
+    private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
