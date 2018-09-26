@@ -17,7 +17,7 @@ public class ArrayStorage {
         if (size == RESUME_MAX_COUNT) {
             System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" +
                     RESUME_MAX_COUNT + ")");
-        } else  if (getIndex(resume.uuid) >= 0) {
+        } else if (getIndex(resume.uuid) >= 0) {
             System.out.println("ОШИБКА: Резюме с таким UUID уже сохранено");
         } else {
             storage[size++] = resume;
@@ -35,7 +35,11 @@ public class ArrayStorage {
 
     Resume get(String uuid) {
         int i = getIndex(uuid);
-        return (i >= 0) ? storage[i] : null;
+        if (i < 0) {
+            System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
+            return null;
+        }
+        return storage[i];
     }
 
     void delete(String uuid) {
