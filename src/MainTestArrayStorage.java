@@ -16,16 +16,18 @@ public class MainTestArrayStorage {
         Resume r3 = new Resume();
         r3.setUuid("uuid3");
 
+        ARRAY_STORAGE.save(r3);
         ARRAY_STORAGE.save(r1);
         ARRAY_STORAGE.save(r2);
-        ARRAY_STORAGE.save(r3);
+
+        printAll();
 
         System.out.println("Get r1: " + ARRAY_STORAGE.get(r1.getUuid()));
         System.out.println("Size: " + ARRAY_STORAGE.size());
 
         System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
 
-/*        System.out.println("\n");
+        System.out.println("\n");
 
         // Проверка: get("uuid2") ссылается на объект r2
         Resume r2_received = ARRAY_STORAGE.get("uuid2");
@@ -43,7 +45,7 @@ public class MainTestArrayStorage {
         System.out.println("resumeNew " + ((resumeNew == resume) ? "==" : "!=") + " get(\"" + resume.getUuid() + "\")");
         Resume r2_received2 = ARRAY_STORAGE.get("uuid2");
         System.out.println("r2 " + ((r2 == r2_received2) ? "==" : "!=") + " get(\"" + r2_received2.getUuid() + "\")");
-*/
+
         printAll();
         ARRAY_STORAGE.delete(r1.getUuid());
         printAll();
