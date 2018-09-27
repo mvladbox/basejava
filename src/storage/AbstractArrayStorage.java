@@ -19,11 +19,11 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void save(Resume resume) {
-        if (size == RESUME_MAX_COUNT)
+        if (size == RESUME_MAX_COUNT) {
             System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")");
-        else if (getIndex(resume.getUuid()) >= 0)
+        } else if (getIndex(resume.getUuid()) >= 0) {
             System.out.println("ОШИБКА: Резюме с таким UUID уже сохранено");
-        else {
+        } else {
             doSave(resume);
             size++;
         }
@@ -31,10 +31,11 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
-        if (index >= 0)
+        if (index >= 0) {
             doUpdate(index, resume);
-        else
+        } else {
             System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
+        }
     }
 
     public void delete(String uuid) {
