@@ -28,7 +28,9 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     protected void doDelete(int index) {
-        System.arraycopy(storage, index + 1, storage, index, size - index);
+        if (index < size - 1) {
+            System.arraycopy(storage, index + 1, storage, index, size - index);
+        }
     }
 
     private int getNewPosition(Resume resume) {
