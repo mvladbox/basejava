@@ -21,11 +21,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         storage[pos] = resume;
     }
 
-    protected void doUpdate(int index, Resume resume) {
-        delete(storage[index].getUuid());
-        save(resume);
-    }
-
     protected void doDelete(int index) {
         if (index < size - 1) {
             System.arraycopy(storage, index + 1, storage, index, size - index);

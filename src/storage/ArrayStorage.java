@@ -20,10 +20,6 @@ public class ArrayStorage extends AbstractArrayStorage {
         storage[size] = resume;
     }
 
-    protected void doUpdate(int index, Resume resume) {
-        storage[index] = resume;
-    }
-
     protected void doDelete(int index) {
         storage[index] = storage[size - 1];
     }
