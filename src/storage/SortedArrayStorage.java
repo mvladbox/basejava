@@ -15,9 +15,8 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 
-    protected void doSave(Resume resume) {
-        int pos = getNewPosition(resume);
-
+    protected void doSave(Resume resume, int index) {
+        int pos = -index - 1;
         System.arraycopy(storage, pos, storage, pos + 1, size - pos);
         storage[pos] = resume;
     }
@@ -31,23 +30,5 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         if (index < size - 1) {
             System.arraycopy(storage, index + 1, storage, index, size - index);
         }
-    }
-
-    private int getNewPosition(Resume resume) {
-        int left = 0;
-        int right = (size > 0) ? size - 1 : 0;
-
-        while (left < right) {
-            int middle = (left + right) >>> 1;
-            if (resume.compareTo(storage[middle]) < 0) {
-                right = middle;
-            } else {
-                left = middle + 1;
-            }
-        }
-        if (left == size - 1 && resume.compareTo(storage[left]) > 0) {
-            left = size;
-        }
-        return left;
     }
 }
