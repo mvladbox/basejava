@@ -9,12 +9,9 @@ public class MainTestArrayStorage {
     private static final Storage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {
-        Resume r1 = new Resume();
-        r1.setUuid("uuid1");
-        Resume r2 = new Resume();
-        r2.setUuid("uuid2");
-        Resume r3 = new Resume();
-        r3.setUuid("uuid3");
+        Resume r1 = new Resume("uuid1");
+        Resume r2 = new Resume("uuid2");
+        Resume r3 = new Resume("uuid3");
 
         ARRAY_STORAGE.save(r3);
         ARRAY_STORAGE.save(r1);
@@ -34,8 +31,7 @@ public class MainTestArrayStorage {
         System.out.println("r2 " + ((r2 == r2_received) ? "==" : "!=") + " get(\"" + r2_received.getUuid() + "\")");
 
         // Проверка: resumeNew является другим объектом, хотя имеет такой же UUID, как у r2
-        Resume resumeNew = new Resume();
-        resumeNew.setUuid("uuid2");
+        Resume resumeNew = new Resume("uuid2");
         System.out.println("r2 " + ((r2 == resumeNew) ? "==" : "!=") + " resumeNew (\"" + resumeNew.getUuid() + "\")");
 
         // Проверка: после обновления, get("uuid2") стал возвращать объект resumeNew, а не r2
