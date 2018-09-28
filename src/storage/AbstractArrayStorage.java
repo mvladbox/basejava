@@ -10,7 +10,7 @@ import java.util.Arrays;
 public abstract class AbstractArrayStorage implements Storage {
     protected static final int RESUME_MAX_COUNT = 10_000;
 
-    protected Resume[] storage = new Resume[RESUME_MAX_COUNT];
+    protected final Resume[] storage = new Resume[RESUME_MAX_COUNT];
     protected int size;
 
     public void clear() {
@@ -22,7 +22,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (size == RESUME_MAX_COUNT) {
             System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")");
         } else {
-            int index = getIndex(resume.getUuid());
+            final int index = getIndex(resume.getUuid());
             if (index >= 0) {
                 System.out.println("ОШИБКА: Резюме с таким UUID уже сохранено");
             } else {
@@ -33,7 +33,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
+        final int index = getIndex(resume.getUuid());
         if (index >= 0) {
             storage[index] = resume;
         } else {
@@ -42,7 +42,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void delete(String uuid) {
-        int index = getIndex(uuid);
+        final int index = getIndex(uuid);
         if (index >= 0) {
             doDelete(index);
             storage[--size] = null;
@@ -52,7 +52,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public Resume get(String uuid) {
-        int index = getIndex(uuid);
+        final int index = getIndex(uuid);
         if (index < 0) {
             System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
             return null;
