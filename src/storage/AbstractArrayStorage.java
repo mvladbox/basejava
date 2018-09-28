@@ -1,5 +1,8 @@
 package storage;
 
+import exception.StorageException;
+import exception.ExistsStorageException;
+import exception.NotExistsStorageException;
 import model.Resume;
 
 import java.util.Arrays;
@@ -20,42 +23,38 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void save(Resume resume) {
         if (size == RESUME_MAX_COUNT) {
-            System.out.println("ОШИБКА: Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")");
-        } else {
-            final int index = getIndex(resume.getUuid());
-            if (index >= 0) {
-                System.out.println("ОШИБКА: Резюме с таким UUID уже сохранено");
-            } else {
-                doSave(resume, index);
-                size++;
-            }
+            throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
+                    resume.getUuid());
         }
+        final int index = getIndex(resume.getUuid());
+        if (index >= 0) {
+            throw new ExistsStorageException(resume.getUuid());
+        }
+        doSave(resume, index);
+        size++;
     }
 
     public void update(Resume resume) {
         final int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-        } else {
-            System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
+        if (index < 0) {
+            throw new ExistsStorageException(resume.getUuid());
         }
+        storage[index] = resume;
     }
 
     public void delete(String uuid) {
         final int index = getIndex(uuid);
-        if (index >= 0) {
-            doDelete(index);
-            storage[--size] = null;
-        } else {
-            System.out.println("ОШИБКА: Запрашиваемое резюме отсутствует");
+        if (index < 0) {
+            throw new NotExistsStorageException(uuid);
         }
+        doDelete(index);
+        storage[--size] = null;
     }
 
     public Resume get(String uuid) {
         final int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("ОШИБКА: Резюме с таким UUID отсутствует");
-            return null;
+            throw new NotExistsStorageException(uuid);
         }
         return storage[index];
     }
