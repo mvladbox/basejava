@@ -109,10 +109,11 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        assertEquals(storage.size(), storage.getAll().length);
-        assertSame(RESUME_1, storage.get(UUID_1));
-        assertSame(RESUME_2, storage.get(UUID_2));
-        assertSame(RESUME_3, storage.get(UUID_3));
+        Resume[] all = storage.getAll();
+        assertEquals(3, all.length);
+        assertSame(RESUME_1, all[0]);
+        assertSame(RESUME_2, all[1]);
+        assertSame(RESUME_3, all[2]);
     }
 
     private void assertSize(int size) {
