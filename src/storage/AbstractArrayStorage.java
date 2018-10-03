@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Abstract array based storage for Resumes
  */
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int RESUME_MAX_COUNT = 10_000;
 
     protected final Resume[] storage = new Resume[RESUME_MAX_COUNT];
