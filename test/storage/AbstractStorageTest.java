@@ -102,9 +102,18 @@ public abstract class AbstractStorageTest {
     public void getAll() throws Exception {
         Resume[] all = storage.getAll();
         assertEquals(3, all.length);
-        assertSame(RESUME_1, all[0]);
-        assertSame(RESUME_2, all[1]);
-        assertSame(RESUME_3, all[2]);
+        assertTrue(containsResume(RESUME_1, all));
+        assertTrue(containsResume(RESUME_2, all));
+        assertTrue(containsResume(RESUME_3, all));
+    }
+
+    private boolean containsResume(Resume resume, Resume[] array) {
+        for (Resume r : array) {
+            if (r == resume) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void assertSize(int size) {

@@ -21,55 +21,37 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
+    @Override
     public void save(Resume resume) {
         if (size == RESUME_MAX_COUNT) {
             throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
                     resume.getUuid());
         }
-        final int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistsStorageException(resume.getUuid());
-        }
-        doSave(resume, index);
+        super.save(resume);
         size++;
     }
 
-    public void update(Resume resume) {
-        final int index = getIndex(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistsStorageException(resume.getUuid());
-        }
-        storage[index] = resume;
-    }
-
+    @Override
     public void delete(String uuid) {
-        final int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistsStorageException(uuid);
-        }
-        doDelete(index);
+        super.delete(uuid);
         storage[--size] = null;
-    }
-
-    public Resume get(String uuid) {
-        final int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistsStorageException(uuid);
-        }
-        return storage[index];
-    }
-
-    public int size() {
-        return size;
     }
 
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
-    protected abstract int getIndex(String uuid);
+    public int size() {
+        return size;
+    }
 
-    protected abstract void doSave(Resume resume, int index);
+    @Override
+    protected void doUpdate(Resume resume, int index) {
+        storage[index] = resume;
+    }
 
-    protected abstract void doDelete(int index);
+    @Override
+    protected Resume getResume(int index) {
+        return storage[index];
+    }
 }
