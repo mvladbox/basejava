@@ -1,8 +1,6 @@
 package storage;
 
 import exception.StorageException;
-import exception.ExistsStorageException;
-import exception.NotExistsStorageException;
 import model.Resume;
 
 import java.util.Arrays;
@@ -21,22 +19,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    @Override
-    public void save(Resume resume) {
-        if (size == RESUME_MAX_COUNT) {
-            throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
-                    resume.getUuid());
-        }
-        super.save(resume);
-        size++;
-    }
-
-    @Override
-    public void delete(String uuid) {
-        super.delete(uuid);
-        storage[--size] = null;
-    }
-
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
@@ -46,12 +28,37 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Resume resume, int index) {
-        storage[index] = resume;
+    protected void doSave(Resume resume, Object index) {
+        if (size == RESUME_MAX_COUNT) {
+            throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
+                    resume.getUuid());
+        }
+        insertIntoArray(resume, (int)index);
+        size++;
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return storage[index];
+    protected void doUpdate(Resume resume, Object index) {
+        storage[(int)index] = resume;
     }
+
+    @Override
+    protected void doDelete(Object index) {
+        slamArray((int)index);
+        storage[--size] = null;
+    }
+
+    @Override
+    protected Resume getResume(Object index) {
+        return storage[(int)index];
+    }
+
+    @Override
+    protected boolean existsResumeByReference(Object index) {
+        return (int)index >= 0;
+    }
+
+    protected abstract void insertIntoArray(Resume resume, int index);
+
+    protected abstract void slamArray(int index);
 }

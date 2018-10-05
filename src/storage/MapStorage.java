@@ -3,33 +3,17 @@ package storage;
 import exception.NotExistsStorageException;
 import model.Resume;
 
+import java.util.Map;
 import java.util.HashMap;
 
 /**
  * Map (HashMap) based storage for Resumes
  */
 public class MapStorage extends AbstractStorage {
-    private final HashMap<String, Resume> storage = new HashMap<String, Resume>();
+    private final Map<String, Resume> storage = new HashMap<>();
 
     public void clear() {
         storage.clear();
-    }
-
-    @Override
-    public void delete(String uuid) {
-        Resume resume = storage.remove(uuid);
-        if (resume == null) {
-            throw new NotExistsStorageException(uuid);
-        }
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        Resume resume = storage.get(uuid);
-        if (resume == null) {
-            throw new NotExistsStorageException(uuid);
-        }
-        return resume;
     }
 
     @Override
@@ -42,28 +26,32 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume resume, int index) {
+    protected void doSave(Resume resume, Object key) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void doUpdate(Resume resume, int index) {
-        storage.replace(resume.getUuid(), resume);
+    protected void doUpdate(Resume resume, Object key) {
+        storage.replace((String)key, resume);
     }
 
     @Override
-    protected void doDelete(int index) {
-        /* Unused. Retrieve by index not need (not supported) */
+    protected void doDelete(Object key) {
+        storage.remove((String)key);
     }
 
     @Override
-    protected int getIndex(String uuid) {
-        return (storage.get(uuid) == null) ? -1 : 0;
+    protected Object findReference(String uuid) {
+        return (storage.get(uuid) == null) ? null : uuid;
     }
 
     @Override
-    protected Resume getResume(int index) {
-        /* Unused. Retrieve by index not need (not supported) */
-        return null;
+    protected boolean existsResumeByReference(Object key) {
+        return key != null;
+    }
+
+    @Override
+    protected Resume getResume(Object key) {
+        return storage.get((String)key);
     }
 }

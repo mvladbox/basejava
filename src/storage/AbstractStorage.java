@@ -10,44 +10,46 @@ import model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void save(Resume resume) {
-        final int index = getIndex(resume.getUuid());
-        if (index >= 0) {
+        final Object ref = findReference(resume.getUuid());
+        if (existsResumeByReference(ref)) {
             throw new ExistsStorageException(resume.getUuid());
         }
-        doSave(resume, index);
+        doSave(resume, ref);
     }
 
     public void update(Resume resume) {
-        final int index = getIndex(resume.getUuid());
-        if (index < 0) {
+        final Object ref = findReference(resume.getUuid());
+        if (!existsResumeByReference(ref)) {
             throw new NotExistsStorageException(resume.getUuid());
         }
-        doUpdate(resume, index);
+        doUpdate(resume, ref);
     }
 
     public void delete(String uuid) {
-        final int index = getIndex(uuid);
-        if (index < 0) {
+        final Object ref = findReference(uuid);
+        if (!existsResumeByReference(ref)) {
             throw new NotExistsStorageException(uuid);
         }
-        doDelete(index);
+        doDelete(ref);
     }
 
     public Resume get(String uuid) {
-        final int index = getIndex(uuid);
-        if (index < 0) {
+        final Object ref = findReference(uuid);
+        if (!existsResumeByReference(ref)) {
             throw new NotExistsStorageException(uuid);
         }
-        return getResume(index);
+        return getResume(ref);
     }
 
-    protected abstract void doSave(Resume resume, int index);
+    protected abstract void doSave(Resume resume, Object ref);
 
-    protected abstract void doUpdate(Resume resume, int index);
+    protected abstract void doUpdate(Resume resume, Object ref);
 
-    protected abstract void doDelete(int index);
+    protected abstract void doDelete(Object ref);
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Object findReference(String uuid);
 
-    protected abstract Resume getResume(int index);
+    protected abstract boolean existsResumeByReference(Object ref);
+
+    protected abstract Resume getResume(Object ref);
 }
