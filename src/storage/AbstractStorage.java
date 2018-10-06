@@ -38,7 +38,7 @@ public abstract class AbstractStorage implements Storage {
         if (!existsResumeByReference(ref)) {
             throw new NotExistsStorageException(uuid);
         }
-        return getResume(ref);
+        return doGet(ref);
     }
 
     protected abstract void doSave(Resume resume, Object ref);
@@ -51,5 +51,5 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract boolean existsResumeByReference(Object ref);
 
-    protected abstract Resume getResume(Object ref);
+    protected abstract Resume doGet(Object ref);
 }

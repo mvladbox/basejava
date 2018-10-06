@@ -32,26 +32,26 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected void doUpdate(Resume resume, Object key) {
-        storage.replace((String)key, resume);
+        storage.replace((String) key, resume);
     }
 
     @Override
     protected void doDelete(Object key) {
-        storage.remove((String)key);
+        storage.remove((String) key);
     }
 
     @Override
     protected Object findReference(String uuid) {
-        return (storage.get(uuid) == null) ? null : uuid;
+        return uuid;
     }
 
     @Override
     protected boolean existsResumeByReference(Object key) {
-        return key != null;
+        return storage.containsKey(key);
     }
 
     @Override
-    protected Resume getResume(Object key) {
-        return storage.get((String)key);
+    protected Resume doGet(Object key) {
+        return storage.get((String) key);
     }
 }

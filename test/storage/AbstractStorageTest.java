@@ -6,6 +6,8 @@ import model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
@@ -108,12 +110,7 @@ public abstract class AbstractStorageTest {
     }
 
     private boolean containsResume(Resume resume, Resume[] array) {
-        for (Resume r : array) {
-            if (r == resume) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.asList(array).contains(resume);
     }
 
     private void assertSize(int size) {

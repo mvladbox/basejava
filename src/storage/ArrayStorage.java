@@ -23,7 +23,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void slamArray(int index) {
+    protected void removeFromArray(int index) {
         storage[index] = storage[size - 1];
     }
 }
