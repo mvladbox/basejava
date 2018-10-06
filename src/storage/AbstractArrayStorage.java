@@ -1,8 +1,6 @@
 package storage;
 
 import exception.StorageException;
-import exception.ExistsStorageException;
-import exception.NotExistsStorageException;
 import model.Resume;
 
 import java.util.Arrays;
@@ -10,7 +8,7 @@ import java.util.Arrays;
 /**
  * Abstract array based storage for Resumes
  */
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int RESUME_MAX_COUNT = 10_000;
 
     protected final Resume[] storage = new Resume[RESUME_MAX_COUNT];
@@ -21,55 +19,46 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void save(Resume resume) {
-        if (size == RESUME_MAX_COUNT) {
-            throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
-                    resume.getUuid());
-        }
-        final int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistsStorageException(resume.getUuid());
-        }
-        doSave(resume, index);
-        size++;
-    }
-
-    public void update(Resume resume) {
-        final int index = getIndex(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistsStorageException(resume.getUuid());
-        }
-        storage[index] = resume;
-    }
-
-    public void delete(String uuid) {
-        final int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistsStorageException(uuid);
-        }
-        doDelete(index);
-        storage[--size] = null;
-    }
-
-    public Resume get(String uuid) {
-        final int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistsStorageException(uuid);
-        }
-        return storage[index];
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    @Override
+    protected void doSave(Resume resume, Object index) {
+        if (size == RESUME_MAX_COUNT) {
+            throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
+                    resume.getUuid());
+        }
+        insertIntoArray(resume, (int) index);
+        size++;
     }
 
-    protected abstract int getIndex(String uuid);
+    @Override
+    protected void doUpdate(Resume resume, Object index) {
+        storage[(int) index] = resume;
+    }
 
-    protected abstract void doSave(Resume resume, int index);
+    @Override
+    protected void doDelete(Object index) {
+        removeFromArray((int) index);
+        storage[--size] = null;
+    }
 
-    protected abstract void doDelete(int index);
+    @Override
+    protected Resume doGet(Object index) {
+        return storage[(int) index];
+    }
+
+    @Override
+    protected boolean existsResumeByReference(Object index) {
+        return (int) index >= 0;
+    }
+
+    protected abstract void insertIntoArray(Resume resume, int index);
+
+    protected abstract void removeFromArray(int index);
 }

@@ -10,19 +10,19 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected int getIndex(String uuid) {
+    protected Object findReference(String uuid) {
         return Arrays.binarySearch(storage, 0, size, new Resume(uuid));
     }
 
     @Override
-    protected void doSave(Resume resume, int index) {
+    protected void insertIntoArray(Resume resume, int index) {
         final int pos = -index - 1;
         System.arraycopy(storage, pos, storage, pos + 1, size - pos);
         storage[pos] = resume;
     }
 
     @Override
-    protected void doDelete(int index) {
+    protected void removeFromArray(int index) {
         final int numMoved = size - index - 1;
         if (numMoved > 0) {
             System.arraycopy(storage, index + 1, storage, index, numMoved);
