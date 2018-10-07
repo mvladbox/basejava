@@ -41,7 +41,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findReference(String uuid) {
+    protected String findReference(String uuid) {
         return uuid;
     }
 

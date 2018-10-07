@@ -33,32 +33,34 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
             throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
                     resume.getUuid());
         }
-        insertIntoArray(resume, (int) index);
+        insertIntoArray(resume, (Integer) index);
         size++;
     }
 
     @Override
     protected void doUpdate(Resume resume, Object index) {
-        storage[(int) index] = resume;
+        storage[(Integer) index] = resume;
     }
 
     @Override
     protected void doDelete(Object index) {
-        removeFromArray((int) index);
+        removeFromArray((Integer) index);
         storage[--size] = null;
     }
 
     @Override
     protected Resume doGet(Object index) {
-        return storage[(int) index];
+        return storage[(Integer) index];
     }
 
     @Override
     protected boolean existsResumeByReference(Object index) {
-        return (int) index >= 0;
+        return (Integer) index >= 0;
     }
 
-    protected abstract void insertIntoArray(Resume resume, int index);
+    protected abstract Integer findReference(String uuid);
 
-    protected abstract void removeFromArray(int index);
+    protected abstract void insertIntoArray(Resume resume, Integer index);
+
+    protected abstract void removeFromArray(Integer index);
 }

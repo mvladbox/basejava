@@ -30,16 +30,16 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void doUpdate(Resume resume, Object index) {
-        storage.set((int) index, resume);
+        storage.set((Integer) index, resume);
     }
 
     @Override
     protected void doDelete(Object index) {
-        storage.remove((int) index);
+        storage.remove(((Integer) index).intValue());
     }
 
     @Override
-    protected Object findReference(String uuid) {
+    protected Integer findReference(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -50,11 +50,11 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean existsResumeByReference(Object index) {
-        return (int) index >= 0;
+        return (Integer) index >= 0;
     }
 
     @Override
     protected Resume doGet(Object index) {
-        return storage.get((int) index);
+        return storage.get((Integer) index);
     }
 }

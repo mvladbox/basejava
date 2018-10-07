@@ -10,35 +10,35 @@ import model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void save(Resume resume) {
-        final Object ref = findReference(resume.getUuid());
-        if (existsResumeByReference(ref)) {
-            throw new ExistsStorageException(resume.getUuid());
-        }
-        doSave(resume, ref);
+        doSave(resume, getNewReference(resume.getUuid()));
     }
 
     public void update(Resume resume) {
-        final Object ref = findReference(resume.getUuid());
-        if (!existsResumeByReference(ref)) {
-            throw new NotExistsStorageException(resume.getUuid());
-        }
-        doUpdate(resume, ref);
+        doUpdate(resume, getReference(resume.getUuid()));
     }
 
     public void delete(String uuid) {
-        final Object ref = findReference(uuid);
-        if (!existsResumeByReference(ref)) {
-            throw new NotExistsStorageException(uuid);
-        }
-        doDelete(ref);
+        doDelete(getReference(uuid));
     }
 
     public Resume get(String uuid) {
+        return doGet(getReference(uuid));
+    }
+
+    private Object getReference(String uuid) {
         final Object ref = findReference(uuid);
         if (!existsResumeByReference(ref)) {
             throw new NotExistsStorageException(uuid);
         }
-        return doGet(ref);
+        return ref;
+    }
+
+    private Object getNewReference(String uuid) {
+        final Object ref = findReference(uuid);
+        if (existsResumeByReference(ref)) {
+            throw new ExistsStorageException(uuid);
+        }
+        return ref;
     }
 
     protected abstract void doSave(Resume resume, Object ref);
