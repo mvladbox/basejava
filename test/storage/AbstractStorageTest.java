@@ -16,21 +16,25 @@ public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
+    private static final String UUID_4 = "uuid4";
     private static final String UUID_DUMMY = "dummy";
     private static final String FULL_NAME_1 = "Fullname One";
     private static final String FULL_NAME_2 = "Fullname Two";
     private static final String FULL_NAME_3 = null;
+    private static final String FULL_NAME_4 = FULL_NAME_1;
     private static final String FULL_NAME_DUMMY = "Fullname Dummy";
 
     private static final Resume RESUME_1;
     private static final Resume RESUME_2;
     private static final Resume RESUME_3;
+    private static final Resume RESUME_4;
     private static final Resume RESUME_DUMMY;
 
     static {
         RESUME_1 = new Resume(UUID_1, FULL_NAME_1);
         RESUME_2 = new Resume(UUID_2, FULL_NAME_2);
         RESUME_3 = new Resume(UUID_3, FULL_NAME_3);
+        RESUME_4 = new Resume(UUID_4, FULL_NAME_4);
         RESUME_DUMMY = new Resume(UUID_DUMMY, FULL_NAME_DUMMY);
     }
 
@@ -44,11 +48,12 @@ public abstract class AbstractStorageTest {
         storage.save(RESUME_1);
         storage.save(RESUME_2);
         storage.save(RESUME_3);
+        storage.save(RESUME_4);
     }
 
     @Test
     public void size() throws Exception {
-        assertSize(3);
+        assertSize(4);
     }
 
     @Test
@@ -60,7 +65,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void save() throws Exception {
         storage.save(RESUME_DUMMY);
-        assertSize(4);
+        assertSize(5);
         assertResumeExists(RESUME_DUMMY);
     }
 
@@ -71,7 +76,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume resumeNew = new Resume(UUID_2);
+        Resume resumeNew = new Resume(UUID_2, FULL_NAME_DUMMY);
         assertNotSame(resumeNew, storage.get(UUID_2));
         storage.update(resumeNew);
         assertSame(resumeNew, storage.get(UUID_2));
@@ -85,7 +90,7 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistsStorageException.class)
     public void delete() throws Exception {
         storage.delete(UUID_2);
-        assertSize(2);
+        assertSize(3);
         storage.get(UUID_2);
     }
 
@@ -107,19 +112,21 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAll() throws Exception {
         List<Resume> all = storage.getAllSorted();
-        assertEquals(3, all.size());
+        assertEquals(4, all.size());
         assertTrue(containsResume(RESUME_1, all));
         assertTrue(containsResume(RESUME_2, all));
         assertTrue(containsResume(RESUME_3, all));
+        assertTrue(containsResume(RESUME_4, all));
     }
 
     @Test
     public void getAllSorted() throws Exception {
         List<Resume> all = storage.getAllSorted();
-        assertEquals(3, all.size());
+        assertEquals(4, all.size());
         assertSame(all.get(0), RESUME_3);
         assertSame(all.get(1), RESUME_1);
-        assertSame(all.get(2), RESUME_2);
+        assertSame(all.get(2), RESUME_4);
+        assertSame(all.get(3), RESUME_2);
     }
 
     private boolean containsResume(Resume resume, List<Resume> list) {

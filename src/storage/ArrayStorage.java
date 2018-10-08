@@ -10,7 +10,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     @Override
     protected Integer findReference(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
+            if (array[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
@@ -19,11 +19,11 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void insertIntoArray(Resume resume, Integer index) {
-        storage[size] = resume;
+        array[size] = resume;
     }
 
     @Override
     protected void removeFromArray(Integer index) {
-        storage[index] = storage[size - 1];
+        array[index] = array[size - 1];
     }
 }

@@ -14,21 +14,21 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Integer findReference(String uuid) {
-        return Arrays.binarySearch(storage, 0, size, new Resume(uuid), RESUME_COMPARATOR);
+        return Arrays.binarySearch(array, 0, size, new Resume(uuid), RESUME_COMPARATOR);
     }
 
     @Override
     protected void insertIntoArray(Resume resume, Integer index) {
         final int pos = -index - 1;
-        System.arraycopy(storage, pos, storage, pos + 1, size - pos);
-        storage[pos] = resume;
+        System.arraycopy(array, pos, array, pos + 1, size - pos);
+        array[pos] = resume;
     }
 
     @Override
     protected void removeFromArray(Integer index) {
         final int numMoved = size - index - 1;
         if (numMoved > 0) {
-            System.arraycopy(storage, index + 1, storage, index, numMoved);
+            System.arraycopy(array, index + 1, array, index, numMoved);
         }
     }
 }

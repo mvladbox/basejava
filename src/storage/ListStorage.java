@@ -9,39 +9,39 @@ import java.util.ArrayList;
  * Collection (ArrayList) based storage for Resumes
  */
 public class ListStorage extends AbstractStorage {
-    private final List<Resume> storage = new ArrayList<>();
+    private final List<Resume> list = new ArrayList<>();
 
     public void clear() {
-        storage.clear();
+        list.clear();
     }
 
     public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
+        return list.toArray(new Resume[0]);
     }
 
     public int size() {
-        return storage.size();
+        return list.size();
     }
 
     @Override
     protected void doSave(Resume resume, Object index) {
-        storage.add(resume);
+        list.add(resume);
     }
 
     @Override
     protected void doUpdate(Resume resume, Object index) {
-        storage.set((Integer) index, resume);
+        list.set((Integer) index, resume);
     }
 
     @Override
     protected void doDelete(Object index) {
-        storage.remove(((Integer) index).intValue());
+        list.remove(((Integer) index).intValue());
     }
 
     @Override
     protected Integer findReference(String uuid) {
-        for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getUuid().equals(uuid)) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getUuid().equals(uuid)) {
                 return i;
             }
         }
@@ -55,6 +55,6 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Resume doGet(Object index) {
-        return storage.get((Integer) index);
+        return list.get((Integer) index);
     }
 }

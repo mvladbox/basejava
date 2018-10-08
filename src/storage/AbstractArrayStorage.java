@@ -11,17 +11,17 @@ import java.util.Arrays;
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int RESUME_MAX_COUNT = 10_000;
 
-    protected final Resume[] storage = new Resume[RESUME_MAX_COUNT];
+    protected final Resume[] array = new Resume[RESUME_MAX_COUNT];
     protected int size;
 
     public void clear() {
-        Arrays.fill(storage, 0, size, null);
+        Arrays.fill(array, 0, size, null);
         size = 0;
     }
 
     @Override
     public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+        return Arrays.copyOfRange(array, 0, size);
     }
 
     public int size() {
@@ -40,18 +40,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected void doUpdate(Resume resume, Object index) {
-        storage[(Integer) index] = resume;
+        array[(Integer) index] = resume;
     }
 
     @Override
     protected void doDelete(Object index) {
         removeFromArray((Integer) index);
-        storage[--size] = null;
+        array[--size] = null;
     }
 
     @Override
     protected Resume doGet(Object index) {
-        return storage[(Integer) index];
+        return array[(Integer) index];
     }
 
     @Override
