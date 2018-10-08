@@ -6,7 +6,7 @@ import model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -17,6 +17,10 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_DUMMY = "dummy";
+    private static final String FULL_NAME_1 = "Fullname One";
+    private static final String FULL_NAME_2 = "Fullname Two";
+    private static final String FULL_NAME_3 = null;
+    private static final String FULL_NAME_DUMMY = "Fullname Dummy";
 
     private static final Resume RESUME_1;
     private static final Resume RESUME_2;
@@ -24,10 +28,10 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_DUMMY;
 
     static {
-        RESUME_1 = new Resume(UUID_1);
-        RESUME_2 = new Resume(UUID_2);
-        RESUME_3 = new Resume(UUID_3);
-        RESUME_DUMMY = new Resume(UUID_DUMMY);
+        RESUME_1 = new Resume(UUID_1, FULL_NAME_1);
+        RESUME_2 = new Resume(UUID_2, FULL_NAME_2);
+        RESUME_3 = new Resume(UUID_3, FULL_NAME_3);
+        RESUME_DUMMY = new Resume(UUID_DUMMY, FULL_NAME_DUMMY);
     }
 
     protected AbstractStorageTest(Storage storage) {
@@ -102,15 +106,24 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        Resume[] all = storage.getAll();
-        assertEquals(3, all.length);
+        List<Resume> all = storage.getAllSorted();
+        assertEquals(3, all.size());
         assertTrue(containsResume(RESUME_1, all));
         assertTrue(containsResume(RESUME_2, all));
         assertTrue(containsResume(RESUME_3, all));
     }
 
-    private boolean containsResume(Resume resume, Resume[] array) {
-        return Arrays.asList(array).contains(resume);
+    @Test
+    public void getAllSorted() throws Exception {
+        List<Resume> all = storage.getAllSorted();
+        assertEquals(3, all.size());
+        assertSame(all.get(0), RESUME_3);
+        assertSame(all.get(1), RESUME_1);
+        assertSame(all.get(2), RESUME_2);
+    }
+
+    private boolean containsResume(Resume resume, List<Resume> list) {
+        return list.contains(resume);
     }
 
     private void assertSize(int size) {

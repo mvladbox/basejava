@@ -4,6 +4,10 @@ import exception.ExistsStorageException;
 import exception.NotExistsStorageException;
 import model.Resume;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * Abstract storage for Resumes
  */
@@ -52,4 +56,13 @@ public abstract class AbstractStorage implements Storage {
     protected abstract boolean existsResumeByReference(Object ref);
 
     protected abstract Resume doGet(Object ref);
+
+    protected abstract Resume[] getAll();
+
+    public List<Resume> getAllSorted() {
+        List<Resume> list = Arrays.asList(getAll());
+//        list.sort(((o1, o2) -> o1.getFullName().compareTo(o2.getFullName())));
+        list.sort((Comparator.comparing(Resume::getFullName)));
+        return list;
+    }
 }
