@@ -2,26 +2,57 @@ package storage;
 
 import model.Resume;
 
-public class MapResumeStorage extends AbstractMapStorage {
+import java.util.HashMap;
+import java.util.Map;
+
+public class MapResumeStorage extends AbstractStorage {
+    protected final Map<Integer, Resume> map = new HashMap<>();
+
+    public void clear() {
+        map.clear();
+    }
+
+    @Override
+    public Resume[] getAll() {
+        return map.values().toArray(new Resume[0]);
+    }
+
+    public int size() {
+        return map.size();
+    }
+
+    @Override
+    protected void doSave(Resume resume, Object key) {
+        map.put(resume.hashCode(), resume);
+    }
 
     @Override
     protected void doUpdate(Resume resume, Object key) {
-        map.remove((String) key);
-        map.put(getKey(resume), resume);
+        map.replace((Integer) key, resume);
     }
 
     @Override
-    protected String findReference(String uuid) {
+    protected void doDelete(Object key) {
+        map.remove((Integer) key);
+    }
+
+    @Override
+    protected Resume doGet(Object key) {
+        return map.get((Integer) key);
+    }
+
+    @Override
+    protected Integer findReference(String uuid) {
         for (Resume resume : map.values()) {
             if (resume.getUuid().equals(uuid)) {
-                return getKey(resume);
+                return resume.hashCode();
             }
         }
-        return null;
+        return -1;
     }
 
     @Override
-    protected String getKey(Resume resume) {
-        return resume.toString();
+    protected boolean existsResumeByReference(Object key) {
+        return map.containsKey((Integer) key);
     }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -11,21 +12,13 @@ public class Resume {
     private final String uuid;
     private String fullName;
 
-    private static String normalizeString(String s) {
-        return (s == null) ? "" : s;
-    }
-
-    public Resume() {
-        this(UUID.randomUUID().toString(), null);
-    }
-
-    public Resume(String uuid) {
-        this(uuid, null);
+    public Resume(String fullName) {
+        this(null, fullName);
     }
 
     public Resume(String uuid, String fullName) {
-        this.uuid = uuid;
-        this.fullName = normalizeString(fullName);
+        this.uuid = Objects.requireNonNullElse(uuid, UUID.randomUUID().toString());
+        this.fullName = Objects.requireNonNull(fullName);
     }
 
     public String getUuid() {
@@ -34,10 +27,6 @@ public class Resume {
 
     public String getFullName() {
         return fullName;
-    }
-
-    protected void setFullName(String fullName) {
-        this.fullName = normalizeString(fullName);
     }
 
     @Override

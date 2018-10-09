@@ -14,7 +14,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Integer findReference(String uuid) {
-        return Arrays.binarySearch(array, 0, size, new Resume(uuid), RESUME_COMPARATOR);
+        return Arrays.binarySearch(array, 0, size, new Resume(uuid, ""), RESUME_COMPARATOR);
     }
 
     @Override

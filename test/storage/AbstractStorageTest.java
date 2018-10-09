@@ -20,7 +20,7 @@ public abstract class AbstractStorageTest {
     private static final String UUID_DUMMY = "dummy";
     private static final String FULL_NAME_1 = "Fullname One";
     private static final String FULL_NAME_2 = "Fullname Two";
-    private static final String FULL_NAME_3 = null;
+    private static final String FULL_NAME_3 = "First";
     private static final String FULL_NAME_4 = FULL_NAME_1;
     private static final String FULL_NAME_DUMMY = "Fullname Dummy";
 
