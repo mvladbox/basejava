@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapResumeStorage extends AbstractStorage {
-    protected final Map<Resume, Resume> map = new HashMap<>();
+    private final Map<String, Resume> map = new HashMap<>();
 
     public void clear() {
         map.clear();
@@ -23,22 +23,22 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected void doSave(Resume resume, Object key) {
-        map.put(resume, resume);
+        map.put(resume.getUuid(), resume);
     }
 
     @Override
     protected void doUpdate(Resume resume, Object key) {
-        map.replace((Resume) key, resume);
+        map.replace(((Resume) key).getUuid(), resume);
     }
 
     @Override
     protected void doDelete(Object key) {
-        map.remove((Resume) key);
+        map.remove(((Resume) key).getUuid());
     }
 
     @Override
     protected Resume doGet(Object key) {
-        return map.get((Resume) key);
+        return map.get(((Resume) key).getUuid());
     }
 
     @Override

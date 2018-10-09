@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapUuidStorage extends AbstractStorage {
-    protected final Map<String, Resume> map = new HashMap<>();
+    private final Map<String, Resume> map = new HashMap<>();
 
     public void clear() {
         map.clear();
