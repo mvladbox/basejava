@@ -33,7 +33,7 @@ public abstract class AbstractStorage implements Storage {
         List<Resume> list = Arrays.asList(getAll());
         list.sort(Comparator
                     .comparing(Resume::getFullName)
-                    .thenComparing(Resume::getFullName));
+                    .thenComparing(Resume::getUuid));
         return list;
     }
 
