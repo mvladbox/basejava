@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapResumeStorage extends AbstractStorage {
-    protected final Map<Integer, Resume> map = new HashMap<>();
+    protected final Map<Resume, Resume> map = new HashMap<>();
 
     public void clear() {
         map.clear();
@@ -23,36 +23,36 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected void doSave(Resume resume, Object key) {
-        map.put(resume.hashCode(), resume);
+        map.put(resume, resume);
     }
 
     @Override
     protected void doUpdate(Resume resume, Object key) {
-        map.replace((Integer) key, resume);
+        map.replace((Resume) key, resume);
     }
 
     @Override
     protected void doDelete(Object key) {
-        map.remove((Integer) key);
+        map.remove((Resume) key);
     }
 
     @Override
     protected Resume doGet(Object key) {
-        return map.get((Integer) key);
+        return map.get((Resume) key);
     }
 
     @Override
-    protected Integer findReference(String uuid) {
+    protected Resume findReference(String uuid) {
         for (Resume resume : map.values()) {
             if (resume.getUuid().equals(uuid)) {
-                return resume.hashCode();
+                return resume;
             }
         }
-        return -1;
+        return null;
     }
 
     @Override
     protected boolean existsResumeByReference(Object key) {
-        return map.containsKey((Integer) key);
+        return key != null;
     }
 }
