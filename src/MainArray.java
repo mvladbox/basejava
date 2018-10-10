@@ -17,19 +17,19 @@ public class MainArray {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            System.out.print("Введите одну из команд - (list | size | save uuid name| update uuid name | delete uuid | get uuid | clear | exit): ");
+            System.out.print("Введите одну из команд - (list | size | save name| update uuid name | delete uuid | get uuid | clear | exit): ");
             String[] params = reader.readLine().trim().toLowerCase().split(" ");
             if (params.length < 1 || params.length > 3) {
                 System.out.println("Неверная команда.");
                 continue;
             }
-            String uuid = null;
-            if (params.length >= 2) {
-                uuid = params[1].intern();
+            String param1 = null;
+            if (params.length > 1) {
+                param1 = params[1].intern();
             }
-            String fullName = null;
-            if (params.length == 3) {
-                fullName = params[2].intern();
+            String param2 = null;
+            if (params.length > 2) {
+                param2 = params[2].intern();
             }
             switch (params[0]) {
                 case "list":
@@ -39,19 +39,19 @@ public class MainArray {
                     System.out.println(ARRAY_STORAGE.size());
                     break;
                 case "save":
-                    ARRAY_STORAGE.save(new Resume(uuid, fullName));
+                    ARRAY_STORAGE.save(new Resume(param1));
                     printAll();
                     break;
                 case "update":
-                    ARRAY_STORAGE.update(new Resume(uuid, fullName));
+                    ARRAY_STORAGE.update(new Resume(param1, param2));
                     printAll();
                     break;
                 case "delete":
-                    ARRAY_STORAGE.delete(uuid);
+                    ARRAY_STORAGE.delete(param1);
                     printAll();
                     break;
                 case "get":
-                    System.out.println(ARRAY_STORAGE.get(uuid));
+                    System.out.println(ARRAY_STORAGE.get(param1));
                     break;
                 case "clear":
                     ARRAY_STORAGE.clear();

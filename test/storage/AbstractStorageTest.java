@@ -6,6 +6,7 @@ import model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -110,27 +111,10 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() throws Exception {
-        List<Resume> all = storage.getAllSorted();
-        assertEquals(4, all.size());
-        assertTrue(containsResume(RESUME_1, all));
-        assertTrue(containsResume(RESUME_2, all));
-        assertTrue(containsResume(RESUME_3, all));
-        assertTrue(containsResume(RESUME_4, all));
-    }
-
-    @Test
     public void getAllSorted() throws Exception {
-        List<Resume> all = storage.getAllSorted();
-        assertEquals(4, all.size());
-        assertSame(all.get(0), RESUME_3);
-        assertSame(all.get(1), RESUME_1);
-        assertSame(all.get(2), RESUME_4);
-        assertSame(all.get(3), RESUME_2);
-    }
-
-    private boolean containsResume(Resume resume, List<Resume> list) {
-        return list.contains(resume);
+        List<Resume> list = storage.getAllSorted();
+        assertEquals(4, list.size());
+        assertEquals(list, Arrays.asList(RESUME_3, RESUME_1, RESUME_4, RESUME_2));
     }
 
     private void assertSize(int size) {

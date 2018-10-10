@@ -22,23 +22,23 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume resume, Object key) {
-        map.put(resume.getUuid(), resume);
+    protected void doSave(Resume resume, Object uuid) {
+        map.put((String) uuid, resume);
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object key) {
-        map.replace((String) key, resume);
+    protected void doUpdate(Resume resume, Object uuid) {
+        map.replace((String) uuid, resume);
     }
 
     @Override
-    protected void doDelete(Object key) {
-        map.remove((String) key);
+    protected void doDelete(Object uuid) {
+        map.remove((String) uuid);
     }
 
     @Override
-    protected Resume doGet(Object key) {
-        return map.get((String) key);
+    protected Resume doGet(Object uuid) {
+        return map.get((String) uuid);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean existsResumeByReference(Object key) {
-        return map.containsKey((String) key);
+    protected boolean existsResumeByReference(Object uuid) {
+        return map.containsKey((String) uuid);
     }
 }
