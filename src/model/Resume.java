@@ -1,5 +1,7 @@
 package model;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,6 +13,9 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private final String fullName;
+
+    public final Map<ContactType, Contact> contacts = new EnumMap<>(ContactType.class);
+    public final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -45,6 +50,15 @@ public class Resume {
 
     @Override
     public String toString() {
-        return getUuid() + " - " + getFullName();
+        StringBuilder str = new StringBuilder(fullName + '\n');
+
+        for (Contact contact : contacts.values()) {
+            str.append(contact);
+        }
+        for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+            str.append("\n").append(entry.getKey().getTitle()).append('\n');
+            str.append(entry.getValue());
+        }
+        return str.toString();
     }
 }
