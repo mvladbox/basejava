@@ -1,13 +1,13 @@
 package model;
 
 public enum ContactType {
-    CT_PHONE("Тел."),
-    CT_SKYPE("Skype"),
-    CT_EMAIL("Почта"),
-    CT_LINKEDIN("Профиль LinkedIn"),
-    CT_GITHUB("Профиль GitHub"),
-    CT_STACKOVERFLOW("Профиль Stackoverflow"),
-    CT_HOMEPAGE("Домашняя страница");
+    PHONE("Тел."),
+    SKYPE("Skype"),
+    EMAIL("Почта"),
+    LINKEDIN("Профиль LinkedIn"),
+    GITHUB("Профиль GitHub"),
+    STACKOVERFLOW("Профиль Stackoverflow"),
+    HOMEPAGE("Домашняя страница");
 
     private String title;
 

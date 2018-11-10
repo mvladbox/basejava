@@ -2,14 +2,11 @@ package model;
 
 import java.util.Objects;
 
-public class SimpleSection implements Section {
+public class SimpleTextSection implements Section {
 
     private String description;
 
-    public SimpleSection() {
-    }
-
-    SimpleSection(String description) {
+    SimpleTextSection(String description) {
         this.description = Objects.requireNonNull(description);
     }
 

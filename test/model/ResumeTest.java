@@ -16,17 +16,19 @@ public class ResumeTest {
     @Before
     public void setUp() {
         resume = new Resume("Григорий Кислин");
-        resume.contacts.put(CT_PHONE, new Contact(CT_PHONE.getTitle(), "+7(921) 855-0482"));
-        resume.contacts.put(CT_SKYPE, new SkypeContact("grigory.kislin"));
-        resume.contacts.put(CT_EMAIL, new EmailContact("gkislin@yandex.ru"));
-        resume.contacts.put(CT_LINKEDIN, new WebContact(CT_LINKEDIN.getTitle(), "https://www.linkedin.com/in/gkislin"));
-        resume.contacts.put(CT_GITHUB, new WebContact(CT_GITHUB.getTitle(), "https://github.com/gkislin"));
-        resume.contacts.put(CT_STACKOVERFLOW, new WebContact(CT_STACKOVERFLOW.getTitle(), "https://stackoverflow.com/users/548473"));
-        resume.contacts.put(CT_HOMEPAGE, new WebContact(CT_HOMEPAGE.getTitle(), "http://gkislin.ru/"));
 
-        resume.sections.put(OBJECTIVE, new SimpleSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
-        resume.sections.put(PERSONAL, new SimpleSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры"));
-        resume.sections.put(ACHIEVEMENT, new EnumeratedSection(Arrays.asList(
+        resume.contacts.put(PHONE, new Contact(PHONE.getTitle(), "+7(921) 855-0482"));
+        resume.contacts.put(SKYPE, new LinkedContact(SKYPE.getTitle(),"grigory.kislin", "skype:grigory.kislin"));
+        resume.contacts.put(EMAIL, new LinkedContact(EMAIL.getTitle(),"gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
+        resume.contacts.put(LINKEDIN, new LinkedContact(LINKEDIN.getTitle(), "https://www.linkedin.com/in/gkislin"));
+        resume.contacts.put(GITHUB, new LinkedContact(GITHUB.getTitle(), "https://github.com/gkislin"));
+        resume.contacts.put(STACKOVERFLOW, new LinkedContact(STACKOVERFLOW.getTitle(), "https://stackoverflow.com/users/548473"));
+        resume.contacts.put(HOMEPAGE, new LinkedContact(HOMEPAGE.getTitle(), "http://gkislin.ru/"));
+
+        resume.sections.put(OBJECTIVE, new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        resume.sections.put(PERSONAL, new SimpleTextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры"));
+
+        resume.sections.put(ACHIEVEMENT, new ListOfTextSection(Arrays.asList(
                 "С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.",
                 "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.",
                 "Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. Интеграция с 1С, Bonita BPM, CMIS, LDAP. Разработка приложения управления окружением на стеке: Scala/Play/Anorm/JQuery. Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера.",
@@ -34,7 +36,7 @@ public class ResumeTest {
                 "Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов (SOA-base архитектура, JAX-WS, JMS, AS Glassfish). Сбор статистики сервисов и информации о состоянии через систему мониторинга Nagios. Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django).",
                 "Реализация протоколов по приему платежей всех основных платежных системы России (Cyberplat, Eport, Chronopay, Сбербанк), Белоруcсии(Erip, Osmp) и Никарагуа."
         )));
-        resume.sections.put(QUALIFICATIONS, new EnumeratedSection(Arrays.asList(
+        resume.sections.put(QUALIFICATIONS, new ListOfTextSection(Arrays.asList(
                 "JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2",
                 "Version control: Subversion, Git, Mercury, ClearCase, Perforce",
                 "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle",
@@ -53,6 +55,7 @@ public class ResumeTest {
                 "программирования",
                 "Родной русский, английский \"upper intermediate\""
         )));
+
         resume.sections.put(EXPERIENCE, new ActivitySection(Arrays.asList(
                 new Activity(new Organization("Java Online Projects", "http://javaops.ru/"),
                         YearMonth.of(2013, 10),

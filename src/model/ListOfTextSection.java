@@ -3,11 +3,11 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumeratedSection implements Section {
+public class ListOfTextSection implements Section {
 
     public final List<String> items = new ArrayList<>();
 
-    public EnumeratedSection(List<String> items) {
+    public ListOfTextSection(List<String> items) {
         this.items.addAll(items);
     }
 

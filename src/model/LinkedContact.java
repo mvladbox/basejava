@@ -1,8 +1,12 @@
 package model;
 
-public abstract class LinkedContact extends Contact {
+public class LinkedContact extends Contact {
 
-    private Link link;
+    private final Link link;
+
+    public LinkedContact(String title, String url) {
+        this(null, title, url);
+    }
 
     public LinkedContact(String label, String title, String url) {
         super(label, null);
