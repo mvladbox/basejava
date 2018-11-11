@@ -6,7 +6,7 @@ public class SimpleTextSection implements Section {
 
     private String description;
 
-    SimpleTextSection(String description) {
+    public SimpleTextSection(String description) {
         this.description = Objects.requireNonNull(description);
     }
 
