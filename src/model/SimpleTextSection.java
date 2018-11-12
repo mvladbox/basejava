@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class SimpleTextSection implements Section {
 
-    private String description;
+    private final String description;
 
     public SimpleTextSection(String description) {
         this.description = Objects.requireNonNull(description);
@@ -14,8 +14,17 @@ public class SimpleTextSection implements Section {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = Objects.requireNonNull(description);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleTextSection that = (SimpleTextSection) o;
+        return Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description);
     }
 
     @Override

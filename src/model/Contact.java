@@ -4,28 +4,22 @@ import java.util.Objects;
 
 public class Contact {
 
-    private String label;
+    private ContactType type;
+    private String title;
     private String value;
 
-    public Contact(String label, String value) {
-        this.label = label;
+    public Contact(ContactType type, String value) {
+        this(type, null, value);
+    }
+
+    public Contact(ContactType type, String title, String value) {
+        this.type = Objects.requireNonNull(type);
+        this.title = title;
         this.value = value;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String title) {
-        this.label = title;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    public ContactType getType() {
+        return type;
     }
 
     @Override
@@ -33,17 +27,29 @@ public class Contact {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Contact contact = (Contact) o;
-        return Objects.equals(label, contact.getLabel()) &&
-                Objects.equals(getValue(), contact.getValue());
+        return type == contact.type &&
+                Objects.equals(title, contact.title) &&
+                Objects.equals(value, contact.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(label, value);
+        return Objects.hash(type, title, value);
     }
 
     @Override
     public String toString() {
-        return ((label != null) ? label + ": " : "") + getValue() + '\n';
+        StringBuilder str = new StringBuilder();
+        if (type == ContactType.PHONE || type == ContactType.EMAIL || type == ContactType.SKYPE) {
+            str.append(type.getTitle()).append(": ");
+        }
+        if (type != ContactType.PHONE) {
+            str.append('<').append((title == null) ? type.getTitle() : title).append('|');
+        }
+        str.append(value);
+        if (type != ContactType.PHONE) {
+            str.append('>');
+        }
+        return str.toString();
     }
 }

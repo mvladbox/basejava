@@ -14,8 +14,8 @@ public class Resume {
     private final String uuid;
     private final String fullName;
 
-    public final Map<ContactType, Contact> contacts = new EnumMap<>(ContactType.class);
-    public final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
+    private final Map<ContactType, Contact> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -34,18 +34,36 @@ public class Resume {
         return fullName;
     }
 
+    public Contact getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public Section getSection(SectionType type) {
+        return sections.get(type);
+    }
+
+    public void addContact(Contact contact) {
+        contacts.put(Objects.requireNonNull(contact).getType(), contact);
+    }
+
+    public void addSection(SectionType type, Section section) {
+        sections.put(Objects.requireNonNull(type), Objects.requireNonNull(section));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) &&
-                Objects.equals(fullName, resume.fullName);
+                Objects.equals(fullName, resume.fullName) &&
+                Objects.equals(contacts, resume.contacts) &&
+                Objects.equals(sections, resume.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, fullName);
+        return Objects.hash(uuid, fullName, contacts, sections);
     }
 
     @Override
@@ -53,7 +71,7 @@ public class Resume {
         StringBuilder str = new StringBuilder(fullName + '\n');
 
         for (Contact contact : contacts.values()) {
-            str.append(contact);
+            str.append(contact).append('\n');
         }
         for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
             str.append("\n").append(entry.getKey().getTitle()).append('\n');
