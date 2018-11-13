@@ -25,5 +25,20 @@ public class MainFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        printFiles(dir);
+    }
+
+    private static void printFiles(File dir) {
+        File[] list = dir.listFiles();
+        if (list != null) {
+            for (File file : list) {
+                if (file.isDirectory()) {
+                    printFiles(file);
+                } else {
+                    System.out.println(file.getAbsolutePath());
+                }
+            }
+        }
     }
 }
