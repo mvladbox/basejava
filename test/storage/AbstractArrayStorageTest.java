@@ -21,7 +21,7 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
                 storage.save(new Resume("Trial" + i));
             }
         } catch (StorageException e) {
-            fail("Наверно, закончилась память!");
+            fail("Exception raised before inserting overflow element");
         }
         storage.save(new Resume("Overflow"));
     }

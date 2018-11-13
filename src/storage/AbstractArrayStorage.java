@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Abstract array based storage for Resumes
  */
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int RESUME_MAX_COUNT = 10_000;
 
     protected final Resume[] array = new Resume[RESUME_MAX_COUNT];
@@ -29,34 +29,34 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume resume, Object index) {
+    protected void doSave(Resume resume, Integer index) {
         if (size == RESUME_MAX_COUNT) {
             throw new StorageException("Достигнут предел количества сохраняемых резюме (" + RESUME_MAX_COUNT + ")",
                     resume.getUuid());
         }
-        insertIntoArray(resume, (Integer) index);
+        insertIntoArray(resume, index);
         size++;
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object index) {
-        array[(Integer) index] = resume;
+    protected void doUpdate(Resume resume, Integer index) {
+        array[index] = resume;
     }
 
     @Override
-    protected void doDelete(Object index) {
-        removeFromArray((Integer) index);
+    protected void doDelete(Integer index) {
+        removeFromArray(index);
         array[--size] = null;
     }
 
     @Override
-    protected Resume doGet(Object index) {
-        return array[(Integer) index];
+    protected Resume doGet(Integer index) {
+        return array[index];
     }
 
     @Override
-    protected boolean existsResumeByReference(Object index) {
-        return (Integer) index >= 0;
+    protected boolean existsResumeByReference(Integer index) {
+        return index >= 0;
     }
 
     protected abstract Integer findReference(String uuid);
