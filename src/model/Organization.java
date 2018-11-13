@@ -4,11 +4,12 @@ import java.util.Objects;
 
 public class Organization {
 
-    private String name;
-    private Contact contact;
+    private final String name;
+    private final Contact contact;
 
     public Organization(String name) {
         this.name = Objects.requireNonNull(name);
+        this.contact = null;
     }
 
     public Organization(String name, String url) {

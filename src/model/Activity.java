@@ -8,20 +8,20 @@ public class Activity {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/yyyy");
 
-    private Organization organization;
-    private YearMonth startDate;
-    private YearMonth endDate;
-    private String title;
-    private String description;
+    private final Organization organization;
+    private final YearMonth startDate;
+    private final YearMonth endDate;
+    private final String title;
+    private final String description;
 
-    public Activity(Organization organization, YearMonth start, YearMonth stop, String title) {
-        this(organization, start, stop, title, null);
+    public Activity(Organization organization, YearMonth start, YearMonth end, String title) {
+        this(organization, start, end, title, null);
     }
 
-    public Activity(Organization organization, YearMonth start, YearMonth stop, String title, String description) {
+    public Activity(Organization organization, YearMonth start, YearMonth end, String title, String description) {
         this.organization = Objects.requireNonNull(organization);
         this.startDate = Objects.requireNonNull(start);
-        this.endDate = stop;
+        this.endDate = end;
         this.title = Objects.requireNonNull(title);
         this.description = description;
     }
@@ -30,40 +30,20 @@ public class Activity {
         return organization;
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = Objects.requireNonNull(organization);
-    }
-
     public YearMonth getStartDate() {
         return startDate;
-    }
-
-    public void setStartDate(YearMonth startDate) {
-        this.startDate = Objects.requireNonNull(startDate);
     }
 
     public YearMonth getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(YearMonth endDate) {
-        this.endDate = endDate;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = Objects.requireNonNull(title);
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

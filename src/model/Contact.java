@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class Contact {
 
-    private ContactType type;
-    private String title;
-    private String value;
+    private final ContactType type;
+    private final String title;
+    private final String value;
 
     public Contact(ContactType type, String value) {
         this(type, null, value);
@@ -15,7 +15,7 @@ public class Contact {
     public Contact(ContactType type, String title, String value) {
         this.type = Objects.requireNonNull(type);
         this.title = title;
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
     }
 
     public ContactType getType() {

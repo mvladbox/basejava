@@ -9,7 +9,7 @@ public class ListOfTextSection implements Section {
     private final List<String> items = new ArrayList<>();
 
     public ListOfTextSection(List<String> items) {
-        this.items.addAll(items);
+        this.items.addAll(Objects.requireNonNull(items));
     }
 
     public List<String> getItems() {
