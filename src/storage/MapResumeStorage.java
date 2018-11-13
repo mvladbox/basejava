@@ -2,7 +2,9 @@ package storage;
 
 import model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapResumeStorage extends AbstractStorage<Resume> {
@@ -13,8 +15,8 @@ public class MapResumeStorage extends AbstractStorage<Resume> {
     }
 
     @Override
-    public Resume[] getAll() {
-        return map.values().toArray(new Resume[0]);
+    public List<Resume> getAll() {
+        return new ArrayList<>(map.values());
     }
 
     public int size() {

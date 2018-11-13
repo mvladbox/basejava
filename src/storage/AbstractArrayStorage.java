@@ -4,6 +4,7 @@ import exception.StorageException;
 import model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Abstract array based storage for Resumes
@@ -20,8 +21,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(array, 0, size);
+    public List<Resume> getAll() {
+        return Arrays.asList(Arrays.copyOfRange(array, 0, size));
     }
 
     public int size() {

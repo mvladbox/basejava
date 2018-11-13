@@ -15,8 +15,8 @@ public class ListStorage extends AbstractStorage<Integer> {
         list.clear();
     }
 
-    public Resume[] getAll() {
-        return list.toArray(new Resume[0]);
+    public List<Resume> getAll() {
+        return new ArrayList<>(list);
     }
 
     public int size() {
