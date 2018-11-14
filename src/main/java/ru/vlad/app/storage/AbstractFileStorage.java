@@ -5,6 +5,7 @@ import ru.vlad.app.model.Resume;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,16 +26,33 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
+        File[] list = directory.listFiles();
+        if (list != null) {
+            for (File file : list) {
+                doDelete(file);
+            }
+        }
     }
 
     @Override
     protected List<Resume> getAll() {
-        return null;
+        List<Resume> listResume = new ArrayList<>();
+        File[] list = directory.listFiles();
+        if (list != null) {
+            for (File file : list) {
+                listResume.add(doGet(file));
+            }
+        }
+        return listResume;
     }
 
     @Override
     public int size() {
-        return 0;
+        String[] list = directory.list();
+        if (list == null) {
+            throw new StorageException("Read directory error (\"" + directory.getAbsolutePath() + "\")", null);
+        }
+        return list.length;
     }
 
     @Override
@@ -43,19 +61,25 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             file.createNewFile();
             doWrite(r, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Error writing to \"" + file.getAbsolutePath() + "\" file", file.getName(), e);
         }
     }
 
     @Override
     protected void doUpdate(Resume r, File file) {
+        try {
+            doWrite(r, file);
+        } catch (IOException e) {
+            throw new StorageException("Error writing to \"" + file.getAbsolutePath() + "\" file", file.getName(), e);
+        }
     }
 
     @Override
     protected void doDelete(File file) {
+        if (!file.delete()) {
+            throw new StorageException("File \"" + file.getAbsolutePath() + "\" could not delete", file.getName());
+        }
     }
-
-    protected abstract void doWrite(Resume r, File file) throws IOException;
 
     @Override
     protected File findReference(String uuid) {
@@ -69,6 +93,14 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume doGet(File file) {
-        return null;
+        try {
+            return doRead(file);
+        } catch (IOException e) {
+            throw new StorageException("Error reading from file \"" + file.getAbsolutePath() + "\"", file.getName(), e);
+        }
     }
+
+    protected abstract void doWrite(Resume r, File file) throws IOException;
+
+    protected abstract Resume doRead(File file) throws IOException;
 }
