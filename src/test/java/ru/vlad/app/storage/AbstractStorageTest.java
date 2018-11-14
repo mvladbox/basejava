@@ -1,5 +1,6 @@
 package ru.vlad.app.storage;
 
+import ru.vlad.app.ResumeTestData;
 import ru.vlad.app.exception.ExistsStorageException;
 import ru.vlad.app.exception.NotExistsStorageException;
 import ru.vlad.app.model.Resume;
@@ -14,12 +15,11 @@ import static org.junit.Assert.*;
 public abstract class AbstractStorageTest {
     protected Storage storage;
 
-    private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
     private static final String UUID_DUMMY = "dummy";
-    private static final String FULL_NAME_1 = "Fullname One";
+    private static final String FULL_NAME_1 = ResumeTestData.getTestResume().getFullName();
     private static final String FULL_NAME_2 = "Fullname Two";
     private static final String FULL_NAME_3 = "First";
     private static final String FULL_NAME_4 = FULL_NAME_1;
@@ -32,7 +32,7 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_DUMMY;
 
     static {
-        RESUME_1 = new Resume(UUID_1, FULL_NAME_1);
+        RESUME_1 = ResumeTestData.getTestResume();
         RESUME_2 = new Resume(UUID_2, FULL_NAME_2);
         RESUME_3 = new Resume(UUID_3, FULL_NAME_3);
         RESUME_4 = new Resume(UUID_4, FULL_NAME_4);
@@ -114,7 +114,7 @@ public abstract class AbstractStorageTest {
     public void getAllSorted() throws Exception {
         List<Resume> list = storage.getAllSorted();
         assertEquals(4, list.size());
-        assertEquals(Arrays.asList(RESUME_3, RESUME_1, RESUME_4, RESUME_2), list);
+        assertEquals(Arrays.asList(RESUME_3, RESUME_2, RESUME_1, RESUME_4), list);
     }
 
     private void assertSize(int size) {
