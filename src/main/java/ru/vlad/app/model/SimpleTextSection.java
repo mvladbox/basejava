@@ -29,6 +29,6 @@ public class SimpleTextSection implements Section {
 
     @Override
     public String toString() {
-        return (description != null) ? "  " + description + '\n' : "";
+        return "  " + description + '\n';
     }
 }
