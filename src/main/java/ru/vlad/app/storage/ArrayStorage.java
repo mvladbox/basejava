@@ -8,7 +8,7 @@ import ru.vlad.app.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected Integer findReference(String uuid) {
+    protected Integer detectReference(String uuid) {
         for (int i = 0; i < size; i++) {
             if (array[i].getUuid().equals(uuid)) {
                 return i;

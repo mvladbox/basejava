@@ -13,7 +13,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     private static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid);
 
     @Override
-    protected Integer findReference(String uuid) {
+    protected Integer detectReference(String uuid) {
         return Arrays.binarySearch(array, 0, size, new Resume(uuid, ""), RESUME_COMPARATOR);
     }
 

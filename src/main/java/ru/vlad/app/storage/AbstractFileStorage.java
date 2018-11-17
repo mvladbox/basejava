@@ -82,12 +82,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected File findReference(String uuid) {
+    protected File detectReference(String uuid) {
         return new File(directory, uuid);
     }
 
     @Override
-    protected boolean existsResumeByReference(File file) {
+    protected boolean existResume(File file) {
         return file.exists();
     }
 

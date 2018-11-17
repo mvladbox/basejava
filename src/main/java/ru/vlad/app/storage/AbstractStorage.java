@@ -1,7 +1,7 @@
 package ru.vlad.app.storage;
 
-import ru.vlad.app.exception.ExistsStorageException;
-import ru.vlad.app.exception.NotExistsStorageException;
+import ru.vlad.app.exception.ExistStorageException;
+import ru.vlad.app.exception.NotExistStorageException;
 import ru.vlad.app.model.Resume;
 
 import java.util.Comparator;
@@ -13,30 +13,30 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractStorage<R> implements Storage {
 
-    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+    private static final Logger log = Logger.getLogger(AbstractStorage.class.getName());
 
     public void save(Resume resume) {
-        LOG.info("Save " + resume);
-        doSave(resume, getNewReference(resume.getUuid()));
+        log.info("Save " + resume);
+        doSave(resume, getReferenceNotExistResume(resume.getUuid()));
     }
 
     public void update(Resume resume) {
-        LOG.info("Update " + resume);
-        doUpdate(resume, getReference(resume.getUuid()));
+        log.info("Update " + resume);
+        doUpdate(resume, getReferenceExistResume(resume.getUuid()));
     }
 
     public void delete(String uuid) {
-        LOG.info("Delete " + uuid);
-        doDelete(getReference(uuid));
+        log.info("Delete " + uuid);
+        doDelete(getReferenceExistResume(uuid));
     }
 
     public Resume get(String uuid) {
-        LOG.info("Get " + uuid);
-        return doGet(getReference(uuid));
+        log.info("Get " + uuid);
+        return doGet(getReferenceExistResume(uuid));
     }
 
     public List<Resume> getAllSorted() {
-        LOG.info("getAllSorted");
+        log.info("getAllSorted");
         List<Resume> list = getAll();
         list.sort(Comparator
                     .comparing(Resume::getFullName)
@@ -44,20 +44,20 @@ public abstract class AbstractStorage<R> implements Storage {
         return list;
     }
 
-    private R getReference(String uuid) {
-        final R ref = findReference(uuid);
-        if (!existsResumeByReference(ref)) {
-            LOG.warning("Resume " + uuid + " not exists");
-            throw new NotExistsStorageException(uuid);
+    private R getReferenceExistResume(String uuid) {
+        final R ref = detectReference(uuid);
+        if (!existResume(ref)) {
+            log.warning("Resume " + uuid + " doesn't exist");
+            throw new NotExistStorageException(uuid);
         }
         return ref;
     }
 
-    private R getNewReference(String uuid) {
-        final R ref = findReference(uuid);
-        if (existsResumeByReference(ref)) {
-            LOG.warning("Resume " + uuid + " already exists");
-            throw new ExistsStorageException(uuid);
+    private R getReferenceNotExistResume(String uuid) {
+        final R ref = detectReference(uuid);
+        if (existResume(ref)) {
+            log.warning("Resume " + uuid + " already exists");
+            throw new ExistStorageException(uuid);
         }
         return ref;
     }
@@ -68,9 +68,9 @@ public abstract class AbstractStorage<R> implements Storage {
 
     protected abstract void doDelete(R ref);
 
-    protected abstract R findReference(String uuid);
+    protected abstract R detectReference(String uuid);
 
-    protected abstract boolean existsResumeByReference(R ref);
+    protected abstract boolean existResume(R ref);
 
     protected abstract Resume doGet(R ref);
 

@@ -30,12 +30,12 @@ public class MapResumeStorage extends AbstractStorage<Resume> {
 
     @Override
     protected void doUpdate(Resume newResume, Resume resume) {
-        map.replace((resume).getUuid(), newResume);
+        map.replace(resume.getUuid(), newResume);
     }
 
     @Override
     protected void doDelete(Resume resume) {
-        map.remove((resume).getUuid());
+        map.remove(resume.getUuid());
     }
 
     @Override
@@ -44,12 +44,12 @@ public class MapResumeStorage extends AbstractStorage<Resume> {
     }
 
     @Override
-    protected Resume findReference(String uuid) {
+    protected Resume detectReference(String uuid) {
         return map.get(uuid);
     }
 
     @Override
-    protected boolean existsResumeByReference(Resume resume) {
+    protected boolean existResume(Resume resume) {
         return resume != null;
     }
 }

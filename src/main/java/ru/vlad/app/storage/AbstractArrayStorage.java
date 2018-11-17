@@ -56,11 +56,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected boolean existsResumeByReference(Integer index) {
+    protected boolean existResume(Integer index) {
         return index >= 0;
     }
-
-    protected abstract Integer findReference(String uuid);
 
     protected abstract void insertIntoArray(Resume resume, Integer index);
 

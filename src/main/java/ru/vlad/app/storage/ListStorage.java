@@ -39,7 +39,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected Integer findReference(String uuid) {
+    protected Integer detectReference(String uuid) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -49,7 +49,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected boolean existsResumeByReference(Integer index) {
+    protected boolean existResume(Integer index) {
         return index >= 0;
     }
 

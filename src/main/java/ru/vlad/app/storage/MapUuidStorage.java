@@ -44,12 +44,12 @@ public class MapUuidStorage extends AbstractStorage<String> {
     }
 
     @Override
-    protected String findReference(String uuid) {
+    protected String detectReference(String uuid) {
         return uuid;
     }
 
     @Override
-    protected boolean existsResumeByReference(String uuid) {
+    protected boolean existResume(String uuid) {
         return map.containsKey(uuid);
     }
 }
