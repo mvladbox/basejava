@@ -1,12 +1,17 @@
 package ru.vlad.app.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ListOfTextSection implements Section {
 
     private final List<String> items = new ArrayList<>();
+
+    public ListOfTextSection(String... items) {
+        this(Arrays.asList(items));
+    }
 
     public ListOfTextSection(List<String> items) {
         this.items.addAll(Objects.requireNonNull(items));

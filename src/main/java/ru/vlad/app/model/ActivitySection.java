@@ -11,6 +11,10 @@ public class ActivitySection implements Section {
 
     private final Set<Activity> items = new TreeSet<>(DESCENT);
 
+    public ActivitySection(Activity... items) {
+        this(Arrays.asList(Objects.requireNonNull(items)));
+    }
+
     public ActivitySection(List<Activity> items) {
         this.items.addAll(Objects.requireNonNull(items));
     }

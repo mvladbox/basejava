@@ -3,7 +3,6 @@ package ru.vlad.app;
 import ru.vlad.app.model.*;
 
 import java.time.YearMonth;
-import java.util.Arrays;
 
 import static ru.vlad.app.model.ContactType.*;
 import static ru.vlad.app.model.SectionType.*;
@@ -15,8 +14,8 @@ public class ResumeTestData {
     static {
         RESUME = new Resume("Григорий Кислин");
         RESUME.addContact(new Contact(PHONE, "+7(921) 855-0482"));
-        RESUME.addContact(new Contact(SKYPE,"grigory.kislin", "skype:grigory.kislin"));
-        RESUME.addContact(new Contact(EMAIL,"gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
+        RESUME.addContact(new Contact(SKYPE, "grigory.kislin", "skype:grigory.kislin"));
+        RESUME.addContact(new Contact(EMAIL, "gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
         RESUME.addContact(new Contact(LINKEDIN, "https://www.linkedin.com/in/gkislin"));
         RESUME.addContact(new Contact(GITHUB, "https://github.com/gkislin"));
         RESUME.addContact(new Contact(STACKOVERFLOW, "https://stackoverflow.com/users/548473"));
@@ -25,15 +24,15 @@ public class ResumeTestData {
         RESUME.addSection(OBJECTIVE, new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         RESUME.addSection(PERSONAL, new SimpleTextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры"));
 
-        RESUME.addSection(ACHIEVEMENT, new ListOfTextSection(Arrays.asList(
+        RESUME.addSection(ACHIEVEMENT, new ListOfTextSection(
                 "С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.",
                 "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.",
                 "Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. Интеграция с 1С, Bonita BPM, CMIS, LDAP. Разработка приложения управления окружением на стеке: Scala/Play/Anorm/JQuery. Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера.",
                 "Реализация c нуля Rich Internet Application приложения на стеке технологий JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Commet, HTML5, Highstock для алгоритмического трейдинга.",
                 "Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов (SOA-base архитектура, JAX-WS, JMS, AS Glassfish). Сбор статистики сервисов и информации о состоянии через систему мониторинга Nagios. Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django).",
                 "Реализация протоколов по приему платежей всех основных платежных системы России (Cyberplat, Eport, Chronopay, Сбербанк), Белоруcсии(Erip, Osmp) и Никарагуа."
-        )));
-        RESUME.addSection(QUALIFICATIONS, new ListOfTextSection(Arrays.asList(
+        ));
+        RESUME.addSection(QUALIFICATIONS, new ListOfTextSection(
                 "JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2",
                 "Version control: Subversion, Git, Mercury, ClearCase, Perforce",
                 "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle",
@@ -51,9 +50,9 @@ public class ResumeTestData {
                 "проектрирования, архитектурных шаблонов, UML, функционального",
                 "программирования",
                 "Родной русский, английский \"upper intermediate\""
-        )));
+        ));
 
-        RESUME.addSection(EXPERIENCE, new ActivitySection(Arrays.asList(
+        RESUME.addSection(EXPERIENCE, new ActivitySection(
                 new Activity(new Organization("Java Online Projects", "http://javaops.ru/"),
                         YearMonth.of(2013, 10),
                         null,
@@ -94,9 +93,9 @@ public class ResumeTestData {
                         YearMonth.of(2005, 1),
                         "Инженер по аппаратному и программному тестированию",
                         "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).")
-        )));
+        ));
         Organization org = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru");
-        RESUME.addSection(EDUCATION, new ActivitySection(Arrays.asList(
+        RESUME.addSection(EDUCATION, new ActivitySection(
                 new Activity(new Organization("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru"),
                         YearMonth.of(1984, 9),
                         YearMonth.of(1987, 6),
@@ -125,7 +124,7 @@ public class ResumeTestData {
                         YearMonth.of(2013, 3),
                         YearMonth.of(2013, 5),
                         "\"Functional Programming Principles in Scala\" by Martin Odersky")
-        )));
+        ));
     }
 
     public static Resume getTestResume() {
