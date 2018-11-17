@@ -1,4 +1,6 @@
 package ru.vlad.app.model;
 
-public interface Section {
+import java.io.Serializable;
+
+public abstract class Section implements Serializable {
 }
