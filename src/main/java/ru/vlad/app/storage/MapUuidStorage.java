@@ -49,7 +49,7 @@ public class MapUuidStorage extends AbstractStorage<String> {
     }
 
     @Override
-    protected boolean existResume(String uuid) {
+    protected boolean isExist(String uuid) {
         return map.containsKey(uuid);
     }
 }

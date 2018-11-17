@@ -87,7 +87,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected boolean existResume(File file) {
+    protected boolean isExist(File file) {
         return file.exists();
     }
 

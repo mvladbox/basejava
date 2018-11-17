@@ -49,7 +49,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected boolean existResume(Integer index) {
+    protected boolean isExist(Integer index) {
         return index >= 0;
     }
 

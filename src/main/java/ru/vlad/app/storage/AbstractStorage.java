@@ -46,7 +46,7 @@ public abstract class AbstractStorage<R> implements Storage {
 
     private R getReferenceExistResume(String uuid) {
         final R ref = detectReference(uuid);
-        if (!existResume(ref)) {
+        if (!isExist(ref)) {
             log.warning("Resume " + uuid + " doesn't exist");
             throw new NotExistStorageException(uuid);
         }
@@ -55,7 +55,7 @@ public abstract class AbstractStorage<R> implements Storage {
 
     private R getReferenceNotExistResume(String uuid) {
         final R ref = detectReference(uuid);
-        if (existResume(ref)) {
+        if (isExist(ref)) {
             log.warning("Resume " + uuid + " already exists");
             throw new ExistStorageException(uuid);
         }
@@ -70,7 +70,7 @@ public abstract class AbstractStorage<R> implements Storage {
 
     protected abstract R detectReference(String uuid);
 
-    protected abstract boolean existResume(R ref);
+    protected abstract boolean isExist(R ref);
 
     protected abstract Resume doGet(R ref);
 
