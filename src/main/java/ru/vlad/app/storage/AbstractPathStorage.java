@@ -7,9 +7,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
@@ -28,76 +28,79 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(this::doDelete);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
+            throw new StorageException("Error reading storage directory \"" + directory.toAbsolutePath() + '\"', null, e);
         }
     }
-/*
+
     @Override
     protected List<Resume> getAll() {
-        List<Resume> listResume = new ArrayList<>();
-        Path[] list = directory.listPaths();
-        if (list != null) {
-            for (Path Path : list) {
-                listResume.add(doGet(Path));
-            }
+        try {
+            return Files.list(directory).map(this::doGet).collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new StorageException("Error reading storage directory \"" + directory.toAbsolutePath() + '\"', null, e);
         }
-        return listResume;
     }
 
     @Override
     public int size() {
-        String[] list = directory.list();
-        if (list == null) {
-            throw new StorageException("Read directory error (\"" + directory.getAbsolutePath() + "\")", null);
-        }
-        return list.length;
-    }
-
-    @Override
-    protected void doSave(Resume r, Path Path) {
         try {
-            Path.createNewPath();
-            doWrite(r, new BufferedOutputStream(new PathOutputStream(Path)));
+            return (int) Files.list(directory).count();
         } catch (IOException e) {
-            throw new StorageException("Error writing to \"" + Path.getAbsolutePath() + "\" Path", Path.getName(), e);
+            throw new StorageException("Error reading storage directory \"" + directory.toAbsolutePath() + '\"', null, e);
         }
     }
 
     @Override
-    protected void doUpdate(Resume r, Path Path) {
+    protected void doSave(Resume r, Path path) {
         try {
-            doWrite(r, new BufferedOutputStream(new PathOutputStream(Path)));
+            Files.createFile(path);
+            doWrite(r, new BufferedOutputStream(new FileOutputStream(path.toFile())));
         } catch (IOException e) {
-            throw new StorageException("Error writing to \"" + Path.getAbsolutePath() + "\" Path", Path.getName(), e);
+            throw new StorageException("Error writing to \"" + path + "\" file", path.toString(), e);
         }
     }
 
     @Override
-    protected void doDelete(Path Path) {
-        if (!Path.delete()) {
-            throw new StorageException("Path \"" + Path.getAbsolutePath() + "\" could not delete", Path.getName());
+    protected void doUpdate(Resume r, Path path) {
+        try {
+            doWrite(r, new BufferedOutputStream(new FileOutputStream(path.toFile())));
+        } catch (IOException e) {
+            throw new StorageException("Error writing to \"" + path + "\" file", path.toString(), e);
+        }
+    }
+
+    @Override
+    protected void doDelete(Path path) {
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new StorageException("File \"" + path + "\" could not delete", path.toString());
         }
     }
 
     @Override
     protected Path detectReference(String uuid) {
-        return new Path(directory, uuid);
-    }
-
-    @Override
-    protected boolean isExist(Path Path) {
-        return Path.exists();
-    }
-
-    @Override
-    protected Resume doGet(Path Path) {
         try {
-            return doRead(new BufferedInputStream(new PathInputStream(Path)));
+            return Files.list(directory).filter(x -> x.toString().equals(uuid)).findFirst().orElse(Paths.get(directory.toString(), uuid));
         } catch (IOException e) {
-            throw new StorageException("Error reading from Path \"" + Path.getAbsolutePath() + "\"", Path.getName(), e);
+            throw new StorageException("Error reading storage directory \"" + directory.toAbsolutePath() + '\"', null, e);
         }
     }
-*/
+
+    @Override
+    protected boolean isExist(Path path) {
+        return Files.exists(path);
+    }
+
+    @Override
+    protected Resume doGet(Path path) {
+        try {
+            return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
+        } catch (IOException e) {
+            throw new StorageException("Error reading from file \"" + path.toAbsolutePath() + "\"", path.toString(), e);
+        }
+    }
+
     protected abstract void doWrite(Resume r, OutputStream stream) throws IOException;
 
     protected abstract Resume doRead(InputStream stream) throws IOException;
