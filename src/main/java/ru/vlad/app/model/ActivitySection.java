@@ -1,15 +1,16 @@
 package ru.vlad.app.model;
 
-import java.time.YearMonth;
+//import java.time.YearMonth;
 import java.util.*;
 
-public class ActivitySection implements Section {
+public class ActivitySection extends AbstractSection {
+    private static final long serialVersionUID = 1L;
 
-    private static final Comparator<Activity> DESCENT = Comparator.comparing((Activity activity) ->
-            (activity.getEndDate() == null) ? YearMonth.of(2099, 12) : activity.getEndDate())
-            .reversed();
+//    private static final Comparator<Activity> DESCENT = Comparator.comparing((Activity activity) ->
+//            (activity.getEndDate() == null) ? YearMonth.of(2099, 12) : activity.getEndDate())
+//            .reversed();
 
-    private final Set<Activity> items = new TreeSet<>(DESCENT);
+    private final Set<Activity> items = new HashSet<>();  //TreeSet<>(/ESCENT);
 
     public ActivitySection(Activity... items) {
         this(Arrays.asList(Objects.requireNonNull(items)));

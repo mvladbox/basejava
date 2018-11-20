@@ -28,17 +28,16 @@ public class MainFile {
             throw new RuntimeException(e);
         }
 
-        printFiles(dir);
+        printDirectories(dir, 0);
     }
 
-    private static void printFiles(File dir) {
+    private static void printDirectories(File dir, int indent) {
         File[] list = dir.listFiles();
         if (list != null) {
             for (File file : list) {
+                System.out.println(((indent == 0) ? "" : String.format("%" + indent + "s", "")) + file.getName());
                 if (file.isDirectory()) {
-                    printFiles(file);
-                } else {
-                    System.out.println(file.getAbsolutePath());
+                    printDirectories(file, indent + 3);
                 }
             }
         }

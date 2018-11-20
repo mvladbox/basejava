@@ -7,12 +7,15 @@ import ru.vlad.app.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
+
+    protected static final File STORAGE_DIR = new File("out/storage");
     protected Storage storage;
 
     private static final String UUID_2 = "uuid2";
@@ -82,7 +85,7 @@ public abstract class AbstractStorageTest {
         Resume resumeNew = new Resume(UUID_2, FULL_NAME_DUMMY);
         assertNotSame(resumeNew, storage.get(UUID_2));
         storage.update(resumeNew);
-        assertSame(resumeNew, storage.get(UUID_2));
+        assertEquals(resumeNew, storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -125,6 +128,6 @@ public abstract class AbstractStorageTest {
     }
 
     private void assertResumeExists(Resume resume) {
-        assertSame(resume, storage.get(resume.getUuid()));
+        assertEquals(resume, storage.get(resume.getUuid()));
     }
 }

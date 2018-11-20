@@ -1,5 +1,6 @@
 package ru.vlad.app.model;
 
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -8,14 +9,15 @@ import java.util.UUID;
 /**
  * Resume class
  */
-public class Resume {
+public class Resume implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Unique identifier
     private final String uuid;
     private final String fullName;
 
     private final Map<ContactType, Contact> contacts = new EnumMap<>(ContactType.class);
-    private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -38,7 +40,7 @@ public class Resume {
         return contacts.get(type);
     }
 
-    public Section getSection(SectionType type) {
+    public AbstractSection getSection(SectionType type) {
         return sections.get(type);
     }
 
@@ -46,7 +48,7 @@ public class Resume {
         contacts.put(Objects.requireNonNull(contact).getType(), contact);
     }
 
-    public void addSection(SectionType type, Section section) {
+    public void addSection(SectionType type, AbstractSection section) {
         sections.put(Objects.requireNonNull(type), Objects.requireNonNull(section));
     }
 
@@ -73,7 +75,7 @@ public class Resume {
         for (Contact contact : contacts.values()) {
             str.append(contact).append('\n');
         }
-        for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+        for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
             str.append("\n").append(entry.getKey().getTitle()).append('\n');
             str.append(entry.getValue());
         }

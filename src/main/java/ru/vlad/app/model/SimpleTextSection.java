@@ -2,7 +2,8 @@ package ru.vlad.app.model;
 
 import java.util.Objects;
 
-public class SimpleTextSection implements Section {
+public class SimpleTextSection extends AbstractSection {
+    private static final long serialVersionUID = 1L;
 
     private final String description;
 
