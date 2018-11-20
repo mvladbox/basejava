@@ -1,4 +1,4 @@
-package ru.vlad.app.storage;
+package ru.vlad.app.storage.serializer;
 
 import ru.vlad.app.model.Resume;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-interface Serialize {
+public interface SerializeStrategy {
 
     void doWrite(Resume r, OutputStream stream) throws IOException;
 

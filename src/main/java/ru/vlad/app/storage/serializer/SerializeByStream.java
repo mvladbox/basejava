@@ -1,11 +1,11 @@
-package ru.vlad.app.storage;
+package ru.vlad.app.storage.serializer;
 
 import ru.vlad.app.exception.StorageException;
 import ru.vlad.app.model.Resume;
 
 import java.io.*;
 
-public class StandardSerialization implements Serialize {
+public class SerializeByStream implements SerializeStrategy {
 
     public void doWrite(Resume r, OutputStream stream) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(stream)) {

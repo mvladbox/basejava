@@ -35,8 +35,8 @@ public class MainFile {
         File[] list = dir.listFiles();
         if (list != null) {
             for (File file : list) {
+                System.out.println(((indent == 0) ? "" : String.format("%" + indent + "s", "")) + file.getName());
                 if (file.isDirectory()) {
-                    System.out.println(((indent == 0) ? "" : String.format("%" + indent + "s", "")) + file.getName());
                     printDirectories(file, indent + 3);
                 }
             }

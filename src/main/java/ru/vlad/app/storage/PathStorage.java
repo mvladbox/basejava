@@ -2,6 +2,7 @@ package ru.vlad.app.storage;
 
 import ru.vlad.app.exception.StorageException;
 import ru.vlad.app.model.Resume;
+import ru.vlad.app.storage.serializer.SerializeStrategy;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,9 +15,9 @@ import java.util.stream.Collectors;
 public class PathStorage extends AbstractStorage<Path> {
 
     private Path directory;
-    private Serialize serialization;
+    private SerializeStrategy serialization;
 
-    public PathStorage(String dir, Serialize serialization) {
+    public PathStorage(String dir, SerializeStrategy serialization) {
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         Objects.requireNonNull(serialization, "serialization must not be null");

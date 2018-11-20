@@ -2,6 +2,7 @@ package ru.vlad.app.storage;
 
 import ru.vlad.app.exception.StorageException;
 import ru.vlad.app.model.Resume;
+import ru.vlad.app.storage.serializer.SerializeStrategy;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ import java.util.Objects;
 public class FileStorage extends AbstractStorage<File> {
 
     private File directory;
-    private Serialize serialization;
+    private SerializeStrategy serialization;
 
-    public FileStorage(File directory, Serialize serialization) {
+    public FileStorage(File directory, SerializeStrategy serialization) {
         Objects.requireNonNull(directory, "directory must not be null");
         Objects.requireNonNull(serialization, "serialization must not be null");
         if (!directory.isDirectory()) {

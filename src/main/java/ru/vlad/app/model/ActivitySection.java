@@ -3,7 +3,7 @@ package ru.vlad.app.model;
 //import java.time.YearMonth;
 import java.util.*;
 
-public class ActivitySection extends Section {
+public class ActivitySection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
 //    private static final Comparator<Activity> DESCENT = Comparator.comparing((Activity activity) ->

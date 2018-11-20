@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ListOfTextSection extends Section {
+public class ListOfTextSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
     private final List<String> items = new ArrayList<>();
