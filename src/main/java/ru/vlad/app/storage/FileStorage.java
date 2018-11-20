@@ -53,7 +53,7 @@ public class FileStorage extends AbstractStorage<File> {
     public int size() {
         String[] list = directory.list();
         if (list == null) {
-            throw new StorageException("Read directory error (\"" + directory.getAbsolutePath() + "\")", null);
+            throw new StorageException("Read directory error (\"" + directory.getAbsolutePath() + "\")");
         }
         return list.length;
     }
