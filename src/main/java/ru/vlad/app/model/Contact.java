@@ -1,14 +1,20 @@
 package ru.vlad.app.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Contact implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final ContactType type;
-    private final String title;
-    private final String value;
+    private ContactType type;
+    private String title;
+    private String value;
+
+    public Contact() {
+    }
 
     public Contact(ContactType type, String value) {
         this(type, null, value);
@@ -22,6 +28,14 @@ public class Contact implements Serializable {
 
     public ContactType getType() {
         return type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override

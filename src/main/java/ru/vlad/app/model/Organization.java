@@ -1,13 +1,19 @@
 package ru.vlad.app.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String name;
-    private final Contact contact;
+    private String name;
+    private Contact contact;
+
+    public Organization() {
+    }
 
     public Organization(String name) {
         this.name = Objects.requireNonNull(name);

@@ -1,6 +1,7 @@
 package ru.vlad.app.model;
 
 //import java.time.YearMonth;
+
 import java.util.*;
 
 public class ActivitySection extends AbstractSection {
@@ -11,6 +12,9 @@ public class ActivitySection extends AbstractSection {
 //            .reversed();
 
     private final Set<Activity> items = new HashSet<>();  //TreeSet<>(/ESCENT);
+
+    public ActivitySection() {
+    }
 
     public ActivitySection(Activity... items) {
         this(Arrays.asList(Objects.requireNonNull(items)));

@@ -1,20 +1,31 @@
 package ru.vlad.app.model;
 
+import ru.vlad.app.util.YearMonthAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Activity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/yyyy");
 
-    private final Organization organization;
-    private final YearMonth startDate;
-    private final YearMonth endDate;
-    private final String title;
-    private final String description;
+    private Organization organization;
+    @XmlJavaTypeAdapter(YearMonthAdapter.class)
+    private YearMonth startDate;
+    @XmlJavaTypeAdapter(YearMonthAdapter.class)
+    private YearMonth endDate;
+    private String title;
+    private String description;
+
+    public Activity() {
+    }
 
     public Activity(Organization organization, YearMonth start, YearMonth end, String title) {
         this(organization, start, end, title, null);
