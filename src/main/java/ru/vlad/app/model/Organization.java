@@ -22,7 +22,17 @@ public class Organization implements Serializable {
 
     public Organization(String name, String url) {
         this.name = Objects.requireNonNull(name);
-        this.contact = new Contact(ContactType.HOMEPAGE, name, url);
+        if (url != null) {
+            this.contact = new Contact(ContactType.HOMEPAGE, name, url);
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Contact getContact() {
+        return contact;
     }
 
     @Override
