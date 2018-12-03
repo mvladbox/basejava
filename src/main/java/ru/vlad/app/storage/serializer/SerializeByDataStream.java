@@ -4,75 +4,11 @@ import ru.vlad.app.model.*;
 
 import java.io.*;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class SerializeByDataStream implements SerializeStrategy {
-
-    @FunctionalInterface
-    public interface ThrowingConsumer<T> extends Consumer<T> {
-        @Override
-        default void accept(T t) {
-            try {
-                acceptThrows(t);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        void acceptThrows(T t) throws IOException;
-    }
-
-    @FunctionalInterface
-    public interface ThrowingIntConsumer extends IntConsumer {
-
-        @Override
-        default void accept(int i) {
-            try {
-                acceptThrows(i);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        void acceptThrows(int i) throws IOException;
-    }
-
-    @FunctionalInterface
-    public interface ThrowingBiConsumer<T, U> extends BiConsumer<T, U> {
-        @Override
-        default void accept(T t, U u) {
-            try {
-                acceptThrows(t, u);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        void acceptThrows(T t, U u) throws IOException;
-    }
-
-    @FunctionalInterface
-    public interface ThrowingSupplier<T> extends Supplier<T> {
-        @Override
-        default T get() {
-            try {
-                return getThrows();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        T getThrows() throws IOException;
-    }
 
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
@@ -80,34 +16,28 @@ public class SerializeByDataStream implements SerializeStrategy {
             write(dos, resume.getUuid());
             write(dos, resume.getFullName());
 
-            Collection<Contact> contacts = resume.getContacts().values();
-            dos.writeInt(contacts.size());
-            contacts.forEach((ThrowingConsumer<Contact>) (contact) -> {
-                write(dos, contact.getType().name());
+            writeCollection(dos, resume.getContacts().entrySet(), map -> {
+                Contact contact = map.getValue();
+                write(dos, map.getKey().name());
                 write(dos, contact.getTitle());
                 write(dos, contact.getValue());
             });
 
-            Map<SectionType, AbstractSection> sections = resume.getSections();
-            dos.writeInt(sections.size());
-            sections.forEach((ThrowingBiConsumer<SectionType, AbstractSection>) (type, section) -> {
-                write(dos, type.name());
-                switch (type) {
+            writeCollection(dos, resume.getSections().entrySet(), map -> {
+                AbstractSection section = map.getValue();
+                write(dos, map.getKey().name());
+                switch (map.getKey()) {
                     case OBJECTIVE:
                     case PERSONAL:
                         write(dos, ((SimpleTextSection) section).getDescription());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> items = ((ListOfTextSection) section).getItems();
-                        dos.writeInt(items.size());
-                        items.forEach((ThrowingConsumer<String>) item -> write(dos, item));
+                        writeCollection(dos, ((ListOfTextSection) section).getItems(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Activity> activities = ((ActivitySection) section).getItems();
-                        dos.writeInt(activities.size());
-                        activities.forEach((ThrowingConsumer<Activity>) activity -> {
+                        writeCollection(dos, ((ActivitySection) section).getItems(), activity -> {
                             write(dos, activity.getOrganization().getName());
                             write(dos, activity.getOrganization().getContact());
                             write(dos, activity.getStartDate());
@@ -126,42 +56,60 @@ public class SerializeByDataStream implements SerializeStrategy {
         try (DataInputStream dis = new DataInputStream(is)) {
             Resume resume = new Resume(read(dis), read(dis));
 
-            Stream.generate((ThrowingSupplier<Contact>) () -> new Contact(ContactType.valueOf(read(dis)), read(dis), read(dis)))
-                    .limit(dis.readInt())
-                    .forEach(resume::addContact);
+            readCollection(dis, () -> resume.addContact(new Contact(ContactType.valueOf(read(dis)), read(dis), read(dis))));
 
-            IntStream.range(0, dis.readInt())
-                    .forEach((ThrowingIntConsumer) (int x) -> {
-                                SectionType type = SectionType.valueOf(read(dis));
-                                switch (type) {
-                                    case OBJECTIVE:
-                                    case PERSONAL:
-                                        resume.addSection(type, new SimpleTextSection(read(dis)));
-                                        break;
-                                    case ACHIEVEMENT:
-                                    case QUALIFICATIONS:
-                                        resume.addSection(type, new ListOfTextSection(
-                                                Stream.generate((ThrowingSupplier<String>) () -> read(dis))
-                                                        .limit(dis.readInt())
-                                                        .collect(Collectors.toList())));
-                                        break;
-                                    case EXPERIENCE:
-                                    case EDUCATION:
-                                        resume.addSection(type, new ActivitySection(
-                                                Stream.generate((ThrowingSupplier<Activity>) () -> new Activity(
-                                                        new Organization(read(dis), read(dis)),
-                                                        readYearMonth(dis),
-                                                        readYearMonth(dis),
-                                                        read(dis),
-                                                        read(dis)))
-                                                        .limit(dis.readInt())
-                                                        .collect(Collectors.toList())));
-                                        break;
-                                }
-                            }
-                    );
+            readCollection(dis, () -> {
+                SectionType type = SectionType.valueOf(read(dis));
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.addSection(type, new SimpleTextSection(read(dis)));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        List<String> items = new ArrayList<>();
+                        readCollection(dis, () -> items.add(read(dis)));
+                        resume.addSection(type, new ListOfTextSection(items));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        List<Activity> activities = new ArrayList<>();
+                        readCollection(dis, () -> activities.add(new Activity(
+                                new Organization(read(dis), read(dis)),
+                                readYearMonth(dis),
+                                readYearMonth(dis),
+                                read(dis),
+                                read(dis))));
+                        resume.addSection(type, new ActivitySection(activities));
+                        break;
+                }
+            });
 
             return resume;
+        }
+    }
+
+    @FunctionalInterface
+    private interface Writer<T> {
+        void write(T t) throws IOException;
+    }
+
+    @FunctionalInterface
+    private interface Reader {
+        void read() throws IOException;
+    }
+
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T element : collection) {
+            writer.write(element);
+        }
+    }
+
+    private void readCollection(DataInputStream dis, Reader reader) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            reader.read();
         }
     }
 
