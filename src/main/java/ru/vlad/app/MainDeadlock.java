@@ -1,10 +1,6 @@
 package ru.vlad.app;
 
-import static ru.vlad.app.MainDeadlock.Sequence.A_B;
-import static ru.vlad.app.MainDeadlock.Sequence.B_A;
-
 public class MainDeadlock {
-    enum Sequence {A_B, B_A}
 
     private static final Object resourceA = new Object();
     private static final Object resourceB = new Object();
@@ -12,40 +8,27 @@ public class MainDeadlock {
     public static void main(String[] args) throws InterruptedException {
 
         Thread threadOne = new Thread(() -> {
-            processChain(A_B);
+            processChain(resourceA, resourceB);
         });
 
         Thread threadTwo = new Thread(() -> {
-            processChain(B_A);
+            processChain(resourceB, resourceA);
         });
 
         threadOne.setName("First Process");
         threadTwo.setName("Second Process");
         threadOne.start();
-//        Thread.sleep(600);
+//        Thread.sleep(1000);
         threadTwo.start();
     }
 
-    private static void processChain(Sequence sequence) {
+    private static void processChain(Object resource1, Object resource2) {
         System.out.println(Thread.currentThread().getName() + " started");
         try {
-            if (sequence == A_B) {
-                System.out.println(Thread.currentThread().getName() + ": Try consume resource A...");
-                synchronized (resourceA) {
-                    consumeResourceA();
-                    System.out.println(Thread.currentThread().getName() + ": Try consume resource B...");
-                    synchronized (resourceB) {
-                        consumeResourceB();
-                    }
-                }
-            } else {
-                System.out.println(Thread.currentThread().getName() + ": Try consume resource B...");
-                synchronized (resourceB) {
-                    consumeResourceA();
-                    System.out.println(Thread.currentThread().getName() + ": Try consume resource A...");
-                    synchronized (resourceA) {
-                        consumeResourceB();
-                    }
+            synchronized (resource1) {
+                consumeResourceA();
+                synchronized (resource2) {
+                    consumeResourceB();
                 }
             }
         } catch (InterruptedException e) {
