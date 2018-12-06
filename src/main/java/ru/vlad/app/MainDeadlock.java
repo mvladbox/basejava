@@ -2,8 +2,8 @@ package ru.vlad.app;
 
 public class MainDeadlock {
 
-    private static final Object resourceA = new Object();
-    private static final Object resourceB = new Object();
+    private static final String resourceA = "A";
+    private static final String resourceB = "B";
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -22,27 +22,19 @@ public class MainDeadlock {
         threadTwo.start();
     }
 
-    private static void processChain(Object resource1, Object resource2) {
+    private static void processChain(String resource1, String resource2) {
         System.out.println(Thread.currentThread().getName() + " started");
         try {
             synchronized (resource1) {
-                consumeResourceA();
+                someWork(resource1);
                 synchronized (resource2) {
-                    consumeResourceB();
+                    someWork(resource2);
                 }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         System.out.println(Thread.currentThread().getName() + " stopped");
-    }
-
-    private static void consumeResourceA() throws InterruptedException {
-        someWork("A");
-    }
-
-    private static void consumeResourceB() throws InterruptedException {
-        someWork("B");
     }
 
     private static void someWork(String resource) throws InterruptedException {
