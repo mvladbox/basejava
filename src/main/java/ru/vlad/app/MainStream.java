@@ -1,9 +1,7 @@
 package ru.vlad.app;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,13 +21,10 @@ public class MainStream {
     }
 
     private static int minValue(int[] values) {
-        AtomicInteger index = new AtomicInteger(0);
         return Arrays.stream(values)
-                .boxed()
-                .sorted(Comparator.reverseOrder())
+                .sorted()
                 .distinct()
-                .mapToInt((v) -> v *= (int) Math.pow(10, index.getAndIncrement()))
-                .sum();
+                .reduce((v1, v2) -> v1 * 10 + v2).orElse(0);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
