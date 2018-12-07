@@ -2,8 +2,8 @@ package ru.vlad.app;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MainStream {
     public static void main(String[] args) {
@@ -28,8 +28,19 @@ public class MainStream {
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        return Stream.of(integers.stream().mapToInt(x -> x).sum() % 2)
-                .flatMap((x) -> integers.stream().filter((i) -> (i % 2 != x)))
-                .collect(Collectors.toList());
+        AtomicInteger sum = new AtomicInteger(0);
+        return integers.stream()
+                .peek(sum::getAndAdd)
+                .collect(Collectors.partitioningBy(x -> x % 2 == 0))
+                .get(sum.get() % 2 != 0);
+
+//        int remainder = integers.stream().mapToInt(x -> x).sum() % 2;
+//        return integers.stream()
+//                .filter((x) -> (x % 2 != remainder))
+//                .collect(Collectors.toList());
+
+//        return Stream.of(integers.stream().mapToInt(x -> x).sum() % 2)
+//                .flatMap((x) -> integers.stream().filter((i) -> (i % 2 != x)))
+//                .collect(Collectors.toList());
     }
 }
