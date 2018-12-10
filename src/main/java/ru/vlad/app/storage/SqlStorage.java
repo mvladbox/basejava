@@ -1,74 +1,85 @@
 package ru.vlad.app.storage;
 
+import ru.vlad.app.exception.ExistStorageException;
 import ru.vlad.app.exception.NotExistStorageException;
-import ru.vlad.app.exception.StorageException;
 import ru.vlad.app.model.Resume;
-import ru.vlad.app.sql.ConnectionFactory;
+import ru.vlad.app.sql.SqlHelper;
 
-import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SqlStorage implements Storage {
-    private final ConnectionFactory connectionFactory;
+    private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        this.sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
     }
 
     @Override
     public void clear() {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement("DELETE FROM resume")) {
-            ps.execute();
-        } catch (SQLException e) {
-            throw new StorageException(e);
-        }
+        sqlHelper.execute("DELETE FROM resume");
     }
 
     @Override
     public void save(Resume resume) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?, ?)")) {
-            ps.setString(1, resume.getUuid());
-            ps.setString(2, resume.getFullName());
-            ps.execute();
-        } catch (SQLException e) {
-            throw new StorageException(e);
+        try {
+            sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?, ?)", p -> {
+                p.setString(1, resume.getUuid());
+                p.setString(2, resume.getFullName());
+            });
+        } catch (Exception e) {
+            if (get(resume.getUuid()) != null) {
+                throw new ExistStorageException(resume.getUuid());
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     public void update(Resume resume) {
-
+        if (get(resume.getUuid()) == null) {
+            throw new NotExistStorageException(resume.getUuid());
+        }
+        sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", p -> {
+            p.setString(1, resume.getFullName());
+            p.setString(2, resume.getUuid());
+        });
     }
 
     @Override
     public void delete(String uuid) {
-
+        if (get(uuid) == null) {
+            throw new NotExistStorageException(uuid);
+        }
+        sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", p -> p.setString(1, uuid));
     }
 
     @Override
     public Resume get(String uuid) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume r WHERE r.uuid = ?")) {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new NotExistStorageException(uuid);
-            }
-            return new Resume(uuid, rs.getString("full_name"));
-        } catch (SQLException e) {
-            throw new StorageException(e);
+        Resume resume = sqlHelper.query("SELECT * FROM resume r WHERE r.uuid = ?",
+                p -> p.setString(1, uuid),
+                r -> new Resume(uuid, r.getString("full_name")));
+        if (resume == null) {
+            throw new NotExistStorageException(uuid);
         }
+        return resume;
     }
 
     @Override
     public List<Resume> getAllSorted() {
-        return null;
+        return sqlHelper.query("SELECT * FROM resume r ORDER BY r.full_name",
+                r -> {
+                    List<Resume> list = new ArrayList<>();
+                    do {
+                        list.add(new Resume(r.getString("uuid").trim(), r.getString("full_name")));
+                    } while (r.next());
+                    return list;
+                });
     }
 
     @Override
     public int size() {
-        return 0;
+        return sqlHelper.query("SELECT COUNT(*) cnt FROM resume", r -> r.getInt("cnt"));
     }
 }
