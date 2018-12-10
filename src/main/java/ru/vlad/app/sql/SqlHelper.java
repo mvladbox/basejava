@@ -3,8 +3,6 @@ package ru.vlad.app.sql;
 import ru.vlad.app.exception.StorageException;
 
 import java.sql.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class SqlHelper {
     private final ConnectionFactory connectionFactory;
@@ -17,27 +15,27 @@ public class SqlHelper {
         execute(sql, p -> {});
     }
 
-    public void execute(String sql, ThrowingConsumer<PreparedStatement> prepareParams) {
+    public void execute(String sql, SetParams<PreparedStatement> prepareParams) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            prepareParams.accept(ps);
+            prepareParams.prepare(ps);
             ps.execute();
         } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
 
-    public <R> R query(String sql, ThrowingFunction<ResultSet, R> result) {
+    public <R> R query(String sql, GetResult<ResultSet, R> result) {
         return query(sql, p -> {}, result);
     }
 
-    public <R> R query(String sql, ThrowingConsumer<PreparedStatement> prepareParams, ThrowingFunction<ResultSet, R> result) {
+    public <R> R query(String sql, SetParams<PreparedStatement> prepareParams, GetResult<ResultSet, R> result) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            prepareParams.accept(ps);
+            prepareParams.prepare(ps);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return result.apply(rs);
+                return result.retrieve(rs);
             } else {
                 return null;
             }
@@ -47,30 +45,12 @@ public class SqlHelper {
     }
 
     @FunctionalInterface
-    public interface ThrowingConsumer<T> extends Consumer<T> {
-        @Override
-        default void accept(T t) {
-            try {
-                acceptThrows(t);
-            } catch (SQLException e) {
-                throw new StorageException(e);
-            }
-        }
-
-        void acceptThrows(T t) throws SQLException;
+    public interface SetParams<T> {
+        void prepare(T t) throws SQLException;
     }
 
     @FunctionalInterface
-    public interface ThrowingFunction<T, R> extends Function<T, R> {
-        @Override
-        default R apply(T t) {
-            try {
-                return applyThrows(t);
-            } catch (SQLException e) {
-                throw new StorageException(e);
-            }
-        }
-
-        R applyThrows(T t) throws SQLException;
+    public interface GetResult<T, R> {
+        R retrieve(T t) throws SQLException;
     }
 }
