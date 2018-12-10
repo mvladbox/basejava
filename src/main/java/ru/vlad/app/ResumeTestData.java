@@ -1,11 +1,6 @@
 package ru.vlad.app;
 
-import ru.vlad.app.model.*;
-
-import java.time.YearMonth;
-
-import static ru.vlad.app.model.ContactType.*;
-import static ru.vlad.app.model.SectionType.*;
+import ru.vlad.app.model.Resume;
 
 public class ResumeTestData {
 
@@ -13,9 +8,10 @@ public class ResumeTestData {
 
     static {
         RESUME = new Resume("Григорий Кислин");
+/*
         RESUME.addContact(new Contact(PHONE, "+7(921) 855-0482"));
-        RESUME.addContact(new Contact(SKYPE, "grigory.kislin", "skype:grigory.kislin"));
-        RESUME.addContact(new Contact(EMAIL, "gkislin@yandex.ru", "mailto:gkislin@yandex.ru"));
+        RESUME.addContact(new Contact(SKYPE, "grigory.kislin"));
+        RESUME.addContact(new Contact(EMAIL, "gkislin@yandex.ru"));
         RESUME.addContact(new Contact(LINKEDIN, "https://www.linkedin.com/in/gkislin"));
         RESUME.addContact(new Contact(GITHUB, "https://github.com/gkislin"));
         RESUME.addContact(new Contact(STACKOVERFLOW, "https://stackoverflow.com/users/548473"));
@@ -125,6 +121,7 @@ public class ResumeTestData {
                         YearMonth.of(2013, 5),
                         "\"Functional Programming Principles in Scala\" by Martin Odersky")
         ));
+*/
     }
 
     public static Resume getTestResume() {

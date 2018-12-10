@@ -19,7 +19,6 @@ public class SerializeByDataStream implements SerializeStrategy {
             writeCollection(dos, resume.getContacts().entrySet(), map -> {
                 Contact contact = map.getValue();
                 write(dos, map.getKey().name());
-                write(dos, contact.getTitle());
                 write(dos, contact.getValue());
             });
 
@@ -39,7 +38,7 @@ public class SerializeByDataStream implements SerializeStrategy {
                     case EDUCATION:
                         writeCollection(dos, ((ActivitySection) section).getItems(), activity -> {
                             write(dos, activity.getOrganization().getName());
-                            write(dos, activity.getOrganization().getContact());
+                            write(dos, activity.getOrganization().getUrl());
                             write(dos, activity.getStartDate());
                             write(dos, activity.getEndDate());
                             write(dos, activity.getTitle());
@@ -56,7 +55,7 @@ public class SerializeByDataStream implements SerializeStrategy {
         try (DataInputStream dis = new DataInputStream(is)) {
             Resume resume = new Resume(read(dis), read(dis));
 
-            readCollection(dis, () -> resume.addContact(new Contact(ContactType.valueOf(read(dis)), read(dis), read(dis))));
+            readCollection(dis, () -> resume.addContact(new Contact(ContactType.valueOf(read(dis)), read(dis))));
 
             readCollection(dis, () -> {
                 SectionType type = SectionType.valueOf(read(dis));
