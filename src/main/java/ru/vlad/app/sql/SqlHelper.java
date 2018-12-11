@@ -16,11 +16,11 @@ public class SqlHelper {
         execute(sql, p -> {});
     }
 
-    public int execute(String sql, SetParams<PreparedStatement> prepareParams) {
+    public boolean execute(String sql, SetParams prepareParams) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             prepareParams.prepare(ps);
-            return ps.executeUpdate();
+            return ps.executeUpdate() != 0;
         } catch (SQLException e) {
             if (e.getSQLState().equals("23505")) {
                 throw new ExistStorageException("");
@@ -29,11 +29,11 @@ public class SqlHelper {
         }
     }
 
-    public <R> R query(String sql, GetResult<ResultSet, R> result) {
+    public <T> T query(String sql, GetResult<T> result) {
         return query(sql, p -> {}, result);
     }
 
-    public <R> R query(String sql, SetParams<PreparedStatement> prepareParams, GetResult<ResultSet, R> result) {
+    public <T> T query(String sql, SetParams prepareParams, GetResult<T> result) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             prepareParams.prepare(ps);
@@ -49,12 +49,12 @@ public class SqlHelper {
     }
 
     @FunctionalInterface
-    public interface SetParams<T> {
-        void prepare(T t) throws SQLException;
+    public interface SetParams {
+        void prepare(PreparedStatement ps) throws SQLException;
     }
 
     @FunctionalInterface
-    public interface GetResult<T, R> {
-        R retrieve(T t) throws SQLException;
+    public interface GetResult<T> {
+        T retrieve(ResultSet rs) throws SQLException;
     }
 }

@@ -29,17 +29,17 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        if (sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", p -> {
+        if (!sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", p -> {
             p.setString(1, resume.getFullName());
             p.setString(2, resume.getUuid());
-        }) == 0) {
+        })) {
             throw new NotExistStorageException(resume.getUuid());
         }
     }
 
     @Override
     public void delete(String uuid) {
-        if (sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", p -> p.setString(1, uuid)) == 0) {
+        if (!sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", p -> p.setString(1, uuid))) {
             throw new NotExistStorageException(uuid);
         }
     }
