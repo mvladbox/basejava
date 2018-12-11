@@ -1,6 +1,5 @@
 package ru.vlad.app.storage;
 
-import ru.vlad.app.exception.ExistStorageException;
 import ru.vlad.app.exception.NotExistStorageException;
 import ru.vlad.app.model.Resume;
 import ru.vlad.app.sql.SqlHelper;
@@ -22,37 +21,27 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        try {
-            sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?, ?)", p -> {
-                p.setString(1, resume.getUuid());
-                p.setString(2, resume.getFullName());
-            });
-        } catch (Exception e) {
-            if (get(resume.getUuid()) != null) {
-                throw new ExistStorageException(resume.getUuid());
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    @Override
-    public void update(Resume resume) {
-        if (get(resume.getUuid()) == null) {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-        sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", p -> {
-            p.setString(1, resume.getFullName());
-            p.setString(2, resume.getUuid());
+        sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?, ?)", p -> {
+            p.setString(1, resume.getUuid());
+            p.setString(2, resume.getFullName());
         });
     }
 
     @Override
+    public void update(Resume resume) {
+        if (sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", p -> {
+            p.setString(1, resume.getFullName());
+            p.setString(2, resume.getUuid());
+        }) == 0) {
+            throw new NotExistStorageException(resume.getUuid());
+        }
+    }
+
+    @Override
     public void delete(String uuid) {
-        if (get(uuid) == null) {
+        if (sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", p -> p.setString(1, uuid)) == 0) {
             throw new NotExistStorageException(uuid);
         }
-        sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", p -> p.setString(1, uuid));
     }
 
     @Override
@@ -68,14 +57,13 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.query("SELECT * FROM resume r ORDER BY r.full_name",
-                r -> {
-                    List<Resume> list = new ArrayList<>();
-                    do {
-                        list.add(new Resume(r.getString("uuid").trim(), r.getString("full_name")));
-                    } while (r.next());
-                    return list;
-                });
+        return sqlHelper.query("SELECT * FROM resume r ORDER BY r.full_name, r.uuid", r -> {
+            List<Resume> list = new ArrayList<>();
+            do {
+                list.add(new Resume(r.getString("uuid").trim(), r.getString("full_name")));
+            } while (r.next());
+            return list;
+        });
     }
 
     @Override
