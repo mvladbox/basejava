@@ -43,9 +43,7 @@ public class SqlStorage implements Storage {
             })) {
                 throw new NotExistStorageException(resume.getUuid());
             }
-            sqlHelper.execute(conn, "DELETE FROM contact WHERE resume_uuid = ?", ps -> {
-                ps.setString(1, resume.getUuid());
-            });
+            sqlHelper.execute(conn, "DELETE FROM contact WHERE resume_uuid = ?", ps -> ps.setString(1, resume.getUuid()));
             saveContacts(resume, conn);
         });
 
