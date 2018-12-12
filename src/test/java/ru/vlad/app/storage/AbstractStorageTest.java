@@ -1,5 +1,6 @@
 package ru.vlad.app.storage;
 
+import ru.vlad.app.Config;
 import ru.vlad.app.ResumeTestData;
 import ru.vlad.app.exception.ExistStorageException;
 import ru.vlad.app.exception.NotExistStorageException;
@@ -15,7 +16,7 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
 
-    protected static final File STORAGE_DIR = new File("out/storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
 
     private static final String UUID_2 = "uuid2";

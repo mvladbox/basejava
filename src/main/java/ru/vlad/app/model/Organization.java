@@ -10,29 +10,27 @@ public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
-    private Contact contact;
+    private String url;
 
     public Organization() {
     }
 
     public Organization(String name) {
         this.name = Objects.requireNonNull(name);
-        this.contact = null;
+        this.url = null;
     }
 
     public Organization(String name, String url) {
         this.name = Objects.requireNonNull(name);
-        if (url != null) {
-            this.contact = new Contact(ContactType.HOMEPAGE, name, url);
-        }
+        this.url = url;
     }
 
     public String getName() {
         return name;
     }
 
-    public Contact getContact() {
-        return contact;
+    public String getUrl() {
+        return url;
     }
 
     @Override
@@ -41,15 +39,15 @@ public class Organization implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(contact, that.contact);
+                Objects.equals(url, that.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, contact);
+        return Objects.hash(name, url);
     }
 
     public String toString() {
-        return (contact != null) ? contact.toString() : name;
+        return (url != null) ? '<' + name + '|' + url + '>' : name;
     }
 }

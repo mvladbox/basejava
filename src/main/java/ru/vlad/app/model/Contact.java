@@ -10,28 +10,18 @@ public class Contact implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private ContactType type;
-    private String title;
     private String value;
 
     public Contact() {
     }
 
     public Contact(ContactType type, String value) {
-        this(type, null, value);
-    }
-
-    public Contact(ContactType type, String title, String value) {
         this.type = Objects.requireNonNull(type);
-        this.title = title;
         this.value = Objects.requireNonNull(value);
     }
 
     public ContactType getType() {
         return type;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getValue() {
@@ -44,13 +34,12 @@ public class Contact implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Contact contact = (Contact) o;
         return type == contact.type &&
-                Objects.equals(title, contact.title) &&
                 Objects.equals(value, contact.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, title, value);
+        return Objects.hash(type, value);
     }
 
     @Override
@@ -60,7 +49,7 @@ public class Contact implements Serializable {
             str.append(type.getTitle()).append(": ");
         }
         if (type != ContactType.PHONE) {
-            str.append('<').append((title == null) ? type.getTitle() : title).append('|');
+            str.append('<').append(type.getTitle()).append('|');
         }
         str.append(value);
         if (type != ContactType.PHONE) {
