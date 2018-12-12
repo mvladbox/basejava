@@ -36,15 +36,13 @@ public class SqlHelper {
         }
     }
 
-    public <K, V> void executeBatch(Connection conn, String sql, Map<K, V> entry, SetBatchParams<K, V> prepareParams) {
+    public <K, V> void executeBatch(Connection conn, String sql, Map<K, V> entry, SetBatchParams<K, V> prepareParams) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (Map.Entry<K, V> e : entry.entrySet()) {
                 prepareParams.prepare(ps, e);
                 ps.addBatch();
             }
             ps.executeBatch();
-        } catch (SQLException e) {
-            throw ExceptionUtil.convertException(e);
         }
     }
 

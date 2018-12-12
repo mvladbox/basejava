@@ -96,7 +96,7 @@ public class SqlStorage implements Storage {
         return sqlHelper.query("SELECT COUNT(*) FROM resume", rs -> rs.getInt(1));
     }
 
-    private void saveContacts(Resume resume, Connection conn) {
+    private void saveContacts(Resume resume, Connection conn) throws SQLException {
         sqlHelper.executeBatch(conn, "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)", resume.getContacts(), (ps, e) -> {
             ps.setString(1, resume.getUuid());
             ps.setString(2, e.getKey().name());
