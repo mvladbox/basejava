@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 public class SqlHelper {
     private final ConnectionFactory connectionFactory;
@@ -19,8 +20,15 @@ public class SqlHelper {
     }
 
     public boolean execute(String sql, SetParams prepareParams) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            return execute(conn, sql, prepareParams);
+        } catch (SQLException e) {
+            throw ExceptionUtil.convertException(e);
+        }
+    }
+
+    public boolean execute(Connection conn, String sql, SetParams prepareParams) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             prepareParams.prepare(ps);
             return ps.executeUpdate() != 0;
         } catch (SQLException e) {
@@ -28,13 +36,24 @@ public class SqlHelper {
         }
     }
 
-    public <T> T transactionalExecute(SqlTransaction<T> executor) {
+    public <K, V> void executeBatch(Connection conn, String sql, Map<K, V> entry, SetBatchParams<K, V> prepareParams) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (Map.Entry<K, V> e : entry.entrySet()) {
+                prepareParams.prepare(ps, e);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        } catch (SQLException e) {
+            throw ExceptionUtil.convertException(e);
+        }
+    }
+
+    public void transactionalExecute(SqlTransaction executor) {
         try (Connection conn = connectionFactory.getConnection()) {
             try {
                 conn.setAutoCommit(false);
-                T res = executor.execute(conn);
+                executor.execute(conn);
                 conn.commit();
-                return res;
             } catch (SQLException e) {
                 conn.rollback();
                 throw ExceptionUtil.convertException(e);
@@ -69,11 +88,17 @@ public class SqlHelper {
     }
 
     @FunctionalInterface
+    public interface SetBatchParams<K, V> {
+        void prepare(PreparedStatement ps, Map.Entry<K, V> entry) throws SQLException;
+    }
+
+    @FunctionalInterface
     public interface GetResult<T> {
         T retrieve(ResultSet rs) throws SQLException;
     }
 
-    public interface SqlTransaction<T> {
-        T execute(Connection conn) throws SQLException;
+    @FunctionalInterface
+    public interface SqlTransaction {
+        void execute(Connection conn) throws SQLException;
     }
 }

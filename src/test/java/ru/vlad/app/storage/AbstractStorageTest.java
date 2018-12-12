@@ -4,6 +4,8 @@ import ru.vlad.app.Config;
 import ru.vlad.app.ResumeTestData;
 import ru.vlad.app.exception.ExistStorageException;
 import ru.vlad.app.exception.NotExistStorageException;
+import ru.vlad.app.model.Contact;
+import ru.vlad.app.model.ContactType;
 import ru.vlad.app.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,6 +86,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() throws Exception {
         Resume resumeNew = new Resume(UUID_2, FULL_NAME_DUMMY);
+        resumeNew.addContact(new Contact(ContactType.PHONE, "+77777777777"));
+        resumeNew.addContact(new Contact(ContactType.EMAIL, "dummy@gmail.com"));
         assertNotSame(resumeNew, storage.get(UUID_2));
         storage.update(resumeNew);
         assertEquals(resumeNew, storage.get(UUID_2));
@@ -108,7 +112,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() throws Exception {
-        assertResumeExists(RESUME_2);
+        assertResumeExists(RESUME_1);
     }
 
     @Test(expected = NotExistStorageException.class)

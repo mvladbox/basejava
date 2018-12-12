@@ -1,6 +1,9 @@
 package ru.vlad.app;
 
+import ru.vlad.app.model.Contact;
 import ru.vlad.app.model.Resume;
+
+import static ru.vlad.app.model.ContactType.*;
 
 public class ResumeTestData {
 
@@ -8,7 +11,7 @@ public class ResumeTestData {
 
     static {
         RESUME = new Resume("Григорий Кислин");
-/*
+
         RESUME.addContact(new Contact(PHONE, "+7(921) 855-0482"));
         RESUME.addContact(new Contact(SKYPE, "grigory.kislin"));
         RESUME.addContact(new Contact(EMAIL, "gkislin@yandex.ru"));
@@ -17,6 +20,7 @@ public class ResumeTestData {
         RESUME.addContact(new Contact(STACKOVERFLOW, "https://stackoverflow.com/users/548473"));
         RESUME.addContact(new Contact(HOMEPAGE, "http://gkislin.ru/"));
 
+/*
         RESUME.addSection(OBJECTIVE, new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         RESUME.addSection(PERSONAL, new SimpleTextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры"));
 
