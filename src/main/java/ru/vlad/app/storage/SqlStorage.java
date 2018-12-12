@@ -37,16 +37,15 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume resume) {
         sqlHelper.transactionalExecute(conn -> {
-            if (!sqlHelper.execute(conn, "" +
-                            "UPDATE resume SET full_name = ? WHERE uuid = ?;" +
-                            "DELETE FROM contact WHERE resume_uuid = ?",
-                    ps -> {
-                        ps.setString(1, resume.getFullName());
-                        ps.setString(2, resume.getUuid());
-                        ps.setString(3, resume.getUuid());
-                    })) {
+            if (!sqlHelper.execute(conn, "UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
+                ps.setString(1, resume.getFullName());
+                ps.setString(2, resume.getUuid());
+            })) {
                 throw new NotExistStorageException(resume.getUuid());
             }
+            sqlHelper.execute(conn, "DELETE FROM contact WHERE resume_uuid = ?", ps -> {
+                ps.setString(1, resume.getUuid());
+            });
             saveContacts(resume, conn);
         });
 

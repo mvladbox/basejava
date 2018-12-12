@@ -91,6 +91,10 @@ public abstract class AbstractStorageTest {
         assertNotSame(resumeNew, storage.get(UUID_2));
         storage.update(resumeNew);
         assertEquals(resumeNew, storage.get(UUID_2));
+        resumeNew.addContact(new Contact(ContactType.SKYPE, "dummy.skype"));
+        storage.update(resumeNew);
+        System.out.println(resumeNew);
+        assertEquals(resumeNew, storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
