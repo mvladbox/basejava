@@ -1,15 +1,17 @@
 package ru.vlad.app.sql;
 
-import ru.vlad.app.exception.ExistStorageException;
 import ru.vlad.app.exception.StorageException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SqlHelper {
     private final ConnectionFactory connectionFactory;
 
-    public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
-        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    public SqlHelper(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
     public void execute(String sql) {
@@ -22,10 +24,7 @@ public class SqlHelper {
             prepareParams.prepare(ps);
             return ps.executeUpdate() != 0;
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
-                throw new ExistStorageException("");
-            }
-            throw new StorageException(e);
+            throw ExceptionUtil.convertException(e);
         }
     }
 

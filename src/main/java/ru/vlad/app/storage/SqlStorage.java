@@ -4,6 +4,7 @@ import ru.vlad.app.exception.NotExistStorageException;
 import ru.vlad.app.model.Resume;
 import ru.vlad.app.sql.SqlHelper;
 
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        this.sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
+        this.sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
     }
 
     @Override
@@ -68,6 +69,6 @@ public class SqlStorage implements Storage {
 
     @Override
     public int size() {
-        return sqlHelper.query("SELECT COUNT(*) cnt FROM resume", r -> r.getInt("cnt"));
+        return sqlHelper.query("SELECT COUNT(*) FROM resume", rs -> rs.getInt(1));
     }
 }
