@@ -1,15 +1,18 @@
 package ru.vlad.app.sql;
 
-import ru.vlad.app.exception.ExistStorageException;
 import ru.vlad.app.exception.StorageException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
 
 public class SqlHelper {
     private final ConnectionFactory connectionFactory;
 
-    public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
-        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    public SqlHelper(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
     public void execute(String sql) {
@@ -17,14 +20,43 @@ public class SqlHelper {
     }
 
     public boolean execute(String sql, SetParams prepareParams) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            return execute(conn, sql, prepareParams);
+        } catch (SQLException e) {
+            throw ExceptionUtil.convertException(e);
+        }
+    }
+
+    public boolean execute(Connection conn, String sql, SetParams prepareParams) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             prepareParams.prepare(ps);
             return ps.executeUpdate() != 0;
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
-                throw new ExistStorageException("");
+            throw ExceptionUtil.convertException(e);
+        }
+    }
+
+    public <K, V> void executeBatch(Connection conn, String sql, Map<K, V> entry, SetBatchParams<K, V> prepareParams) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (Map.Entry<K, V> e : entry.entrySet()) {
+                prepareParams.prepare(ps, e);
+                ps.addBatch();
             }
+            ps.executeBatch();
+        }
+    }
+
+    public void transactionalExecute(SqlTransaction executor) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                executor.execute(conn);
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw ExceptionUtil.convertException(e);
+            }
+        } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
@@ -54,7 +86,17 @@ public class SqlHelper {
     }
 
     @FunctionalInterface
+    public interface SetBatchParams<K, V> {
+        void prepare(PreparedStatement ps, Map.Entry<K, V> entry) throws SQLException;
+    }
+
+    @FunctionalInterface
     public interface GetResult<T> {
         T retrieve(ResultSet rs) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface SqlTransaction {
+        void execute(Connection conn) throws SQLException;
     }
 }
