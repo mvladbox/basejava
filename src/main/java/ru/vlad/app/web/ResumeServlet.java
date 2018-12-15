@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class ResumeServlet extends javax.servlet.http.HttpServlet {
 
+    private static final Storage storage = Config.get().getStorage();
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 
@@ -23,7 +25,6 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
 
         PrintWriter pw = response.getWriter();
 
-        Storage storage = Config.get().getStorage();
         String uuid = request.getParameter("uuid");
         if (uuid != null) {
             Resume r = storage.get(uuid);
