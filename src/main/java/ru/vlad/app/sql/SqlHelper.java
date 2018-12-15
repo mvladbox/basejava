@@ -65,9 +65,20 @@ public class SqlHelper {
         return query(sql, p -> {}, result);
     }
 
+    public <T> T query(Connection conn, String sql, GetResult<T> result) {
+        return query(conn, sql, p -> {}, result);
+    }
+
     public <T> T query(String sql, SetParams prepareParams, GetResult<T> result) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            return query(conn, sql, prepareParams, result);
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    public <T> T query(Connection conn, String sql, SetParams prepareParams, GetResult<T> result) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             prepareParams.prepare(ps);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -75,6 +86,14 @@ public class SqlHelper {
             } else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    public <T> T batchQuery(GetResultSingleConnection<T> executor) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            return executor.retrieve(conn);
         } catch (SQLException e) {
             throw new StorageException(e);
         }
@@ -93,6 +112,11 @@ public class SqlHelper {
     @FunctionalInterface
     public interface GetResult<T> {
         T retrieve(ResultSet rs) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface GetResultSingleConnection<T> {
+        T retrieve(Connection conn) throws SQLException;
     }
 
     @FunctionalInterface
