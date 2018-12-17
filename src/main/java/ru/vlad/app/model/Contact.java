@@ -48,11 +48,11 @@ public class Contact implements Serializable {
         if (type == ContactType.PHONE || type == ContactType.EMAIL || type == ContactType.SKYPE) {
             str.append(type.getTitle()).append(": ");
         }
-        if (type != ContactType.PHONE) {
+        if (type != ContactType.PHONE && type != ContactType.SKYPE) {
             str.append('<').append(type.getTitle()).append('|');
         }
         str.append(value);
-        if (type != ContactType.PHONE) {
+        if (type != ContactType.PHONE && type != ContactType.SKYPE) {
             str.append('>');
         }
         return str.toString();
