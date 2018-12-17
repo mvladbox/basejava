@@ -3,6 +3,7 @@ package ru.vlad.app.storage;
 import ru.vlad.app.exception.NotExistStorageException;
 import ru.vlad.app.model.*;
 import ru.vlad.app.sql.SqlHelper;
+import ru.vlad.app.util.JsonParser;
 
 import java.sql.*;
 import java.util.*;
@@ -111,7 +112,7 @@ public class SqlStorage implements Storage {
         sqlHelper.executeBatch(conn, "INSERT INTO section (resume_uuid, type, value) VALUES (?, ?, ?)", resume.getSections(), (ps, e) -> {
             ps.setString(1, resume.getUuid());
             ps.setString(2, e.getKey().name());
-            ps.setString(3, convertSectionToString(e.getKey(), e.getValue()));
+            ps.setString(3, convertSectionToString(e.getValue()));
         });
     }
 
@@ -127,8 +128,7 @@ public class SqlStorage implements Storage {
     private Resume loadSections(Resume resume, ResultSet rs) throws SQLException {
         do {
             if (rs.getString("type") != null) {
-                SectionType st = SectionType.valueOf(rs.getString("type"));
-                resume.addSection(st, convertStringToSection(st, rs.getString("value")));
+                resume.addSection(SectionType.valueOf(rs.getString("type")), convertStringToSection(rs.getString("value")));
             }
         } while (rs.next() && resume.getUuid().equals(rs.getString("resume_uuid")));
         return resume;
@@ -140,7 +140,7 @@ public class SqlStorage implements Storage {
 //    }
 //
 //    private Resume loadSections(Resume resume, ResultSet rs) throws SQLException {
-//        return load(resume, rs, (type) -> resume.addSection(SectionType.valueOf(type), convertStringToSection(SectionType.valueOf(type), rs.getString("value"))));
+//        return load(resume, rs, (type) -> resume.addSection(SectionType.valueOf(type), convertStringToSection(rs.getString("value"))));
 //    }
 //
 //    private Resume load(Resume resume, ResultSet rs, Load loader) throws SQLException {
@@ -157,27 +157,11 @@ public class SqlStorage implements Storage {
 //        void load(String type) throws SQLException;
 //    }
 
-    private String convertSectionToString(SectionType sectionType, AbstractSection section) {
-        switch (sectionType) {
-            case OBJECTIVE:
-            case PERSONAL:
-                return ((SimpleTextSection) section).getDescription();
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                return String.join("\n", ((ListOfTextSection) section).getItems());
-        }
-        return null;
+    private String convertSectionToString(AbstractSection section) {
+        return JsonParser.write(section, AbstractSection.class);
     }
 
-    private AbstractSection convertStringToSection(SectionType sectionType, String value) {
-        switch (sectionType) {
-            case OBJECTIVE:
-            case PERSONAL:
-                return new SimpleTextSection(value);
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                return new ListOfTextSection(value.split("\n"));
-        }
-        return null;
+    private AbstractSection convertStringToSection(String value) {
+        return JsonParser.read(value, AbstractSection.class);
     }
 }
