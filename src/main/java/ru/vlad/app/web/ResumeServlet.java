@@ -1,67 +1,62 @@
 package ru.vlad.app.web;
 
 import ru.vlad.app.Config;
-import ru.vlad.app.model.*;
+import ru.vlad.app.model.Contact;
+import ru.vlad.app.model.ContactType;
+import ru.vlad.app.model.Resume;
 import ru.vlad.app.storage.Storage;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
 
 public class ResumeServlet extends javax.servlet.http.HttpServlet {
 
     private static final Storage storage = Config.get().getStorage();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume r = storage.get(uuid);
+        r.setFullName(fullName);
+        for (ContactType type : ContactType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                r.addContact(new Contact(type, value));
+            } else {
+                r.getContacts().remove(type);
+            }
+        }
+        storage.update(r);
+        response.sendRedirect("resume");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-
-        PrintWriter pw = response.getWriter();
-
         String uuid = request.getParameter("uuid");
-        if (uuid != null) {
-            Resume r = storage.get(uuid);
-            pw.write("<h1>" + r.getFullName() + "</h1>");
-
-            pw.write("<h2>Контакты</h2>");
-            pw.write("<ul>");
-            for (Contact contact : r.getContacts().values()) {
-                pw.write("<li>" + contact + "</li>");
-            }
-            pw.write("</ul>");
-
-            for (Map.Entry<SectionType, AbstractSection> entry : r.getSections().entrySet()) {
-                SectionType st = entry.getKey();
-                AbstractSection section = entry.getValue();
-                pw.write("<h3>" + st.getTitle() + "</h3>");
-                switch (st) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        pw.write("<p>" + ((SimpleTextSection) section).getDescription() + "</p>");
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        pw.write("<ul>");
-                        for (String item : ((ListOfTextSection) section).getItems()) {
-                            pw.write("<li>" + item + "</li>");
-                        }
-                        pw.write("</ul>");
-                        break;
-                }
-            }
-        } else {
-            pw.write("<table><th><td>Соискатели</td></th>");
-            for (Resume r : storage.getAllSorted()) {
-                pw.write("<tr><td><a href='?uuid=" + r.getUuid() + "'>" + r.getFullName() + "</a> </td></tr>");
-            }
-            pw.write("</table>");
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
         }
+        Resume r;
+        switch (action) {
+            case "delete":
+                storage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "view":
+            case "edit":
+                r = storage.get(uuid);
+                break;
+            default:
+                throw new IllegalArgumentException("Action " + action + " is illegal");
+        }
+        request.setAttribute("resume", r);
+        request.getRequestDispatcher(
+                ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
+        ).forward(request, response);
     }
 }
