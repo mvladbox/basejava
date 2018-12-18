@@ -1,4 +1,5 @@
 <%@ page import="ru.vlad.app.model.ContactType" %>
+<%@ page import="ru.vlad.app.model.SectionType" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -21,16 +22,20 @@
         <c:forEach var="type" items="<%=ContactType.values()%>">
             <dl>
                 <dt>${type.title}</dt>
-                <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
+                <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type).value}"></dd>
             </dl>
         </c:forEach>
-        <h3>Секции:</h3>
-        <input type="text" name="section" size=30 value="1"><br/>
-        <input type="text" name="section" size=30 value="2"><br/>
-        <input type="text" name="section" size=30 value="3"><br/>
+        <h3>${SectionType.OBJECTIVE.title}:</h3>
+        <textarea name="${SectionType.OBJECTIVE.name()}" cols="100" rows="2">${OBJECTIVE}</textarea><br/>
+        <h3>${SectionType.PERSONAL.title}:</h3>
+        <textarea name="${SectionType.PERSONAL.name()}" cols="100" rows="2">${PERSONAL}</textarea><br/>
+        <h3>${SectionType.ACHIEVEMENT.title}:</h3>
+        <textarea name="${SectionType.ACHIEVEMENT.name()}" cols="100" rows="10">${ACHIEVEMENT}</textarea><br/>
+        <h3>${SectionType.QUALIFICATIONS.title}:</h3>
+        <textarea name="${SectionType.QUALIFICATIONS.name()}" cols="100" rows="10">${QUALIFICATIONS}</textarea><br/>
         <hr>
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <button type="reset" onclick="window.history.back()">Отменить</button>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

@@ -1,9 +1,7 @@
 package ru.vlad.app.web;
 
 import ru.vlad.app.Config;
-import ru.vlad.app.model.Contact;
-import ru.vlad.app.model.ContactType;
-import ru.vlad.app.model.Resume;
+import ru.vlad.app.model.*;
 import ru.vlad.app.storage.Storage;
 
 import javax.servlet.ServletException;
@@ -29,6 +27,14 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
                 r.getContacts().remove(type);
             }
         }
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                r.addSection(type, convertStringToSection(type, value.trim()));
+            } else {
+                r.getSections().remove(type);
+            }
+        }
         storage.update(r);
         response.sendRedirect("resume");
     }
@@ -50,13 +56,46 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                if (action.equals("edit")) {
+                    for (SectionType type : SectionType.values()) {
+                        AbstractSection section = r.getSection(type);
+                        if (section != null) {
+                            request.setAttribute(type.name(), convertSectionToString(type, section));
+                        }
+                    }
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
         request.setAttribute("resume", r);
+        System.out.println(r);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
+    }
+
+    private AbstractSection convertStringToSection(SectionType sectionType, String value) {
+        switch (sectionType) {
+            case OBJECTIVE:
+            case PERSONAL:
+                return new SimpleTextSection(value);
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                return new ListOfTextSection(value.split("\\s*\n+\\s*"));
+        }
+        return null;
+    }
+
+    private String convertSectionToString(SectionType sectionType, AbstractSection section) {
+        switch (sectionType) {
+            case OBJECTIVE:
+            case PERSONAL:
+                return ((SimpleTextSection) section).getDescription();
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                return String.join("\n", ((ListOfTextSection) section).getItems());
+        }
+        return null;
     }
 }
