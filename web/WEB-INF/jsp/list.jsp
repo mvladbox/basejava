@@ -26,7 +26,10 @@
                 <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></td>
             </tr>
         </c:forEach>
-   </table>
+    </table>
+    <form method="post" action="resume?action=create" enctype="application/x-www-form-urlencoded">
+        <button type="submit">Добавить</button>
+    </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

@@ -15,9 +15,18 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+        if ("create".equals(action)) {
+            response.sendRedirect("resume?uuid=new&action=edit");
+            return;
+        }
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
+        if (fullName == null || fullName.trim().length() == 0) {
+            response.sendRedirect("resume");
+            return;
+        }
+        Resume r = ("new".equals(uuid)) ? new Resume("") : storage.get(uuid);
         r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -35,7 +44,11 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
                 r.getSections().remove(type);
             }
         }
-        storage.update(r);
+        if ("new".equals(uuid)) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
     }
 
@@ -55,7 +68,7 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
                 return;
             case "view":
             case "edit":
-                r = storage.get(uuid);
+                r = ("new".equals(uuid)) ? new Resume("new","") : storage.get(uuid);
                 if (action.equals("edit")) {
                     for (SectionType type : SectionType.values()) {
                         AbstractSection section = r.getSection(type);
@@ -69,7 +82,6 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
         request.setAttribute("resume", r);
-        System.out.println(r);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
