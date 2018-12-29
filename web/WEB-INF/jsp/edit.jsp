@@ -78,9 +78,9 @@
                             <td width="40%">
                                 <dl>
                                 <%--<dt>С:</dt>--%>
-                                    <dd><input type="text" name="${startDate}" value="<c:out value="${requestScope[startDate].get(i)}"/>" size="3" maxlength="7"></dd>
+                                    <dd><input type="text" name="${startDate}" value="<c:out value="${requestScope[startDate].get(i)}"/>" size="3" maxlength="7" placeholder="dd/yyyy"></dd>
                                 <%--<dt>по:</dt>--%>
-                                    <dd><input type="text" name="${endDate}" value="<c:out value="${requestScope[endDate].get(i)}"/>" size="3" maxlength="7"></dd>
+                                    <dd><input type="text" name="${endDate}" value="<c:out value="${requestScope[endDate].get(i)}"/>" size="3" maxlength="7" placeholder="dd/yyyy"></dd>
                                 </dl>
                             </td>
                             <td>

@@ -29,7 +29,7 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
         }
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        if (fullName == null || fullName.trim().length() == 0) {
+        if (isEmpty(fullName)) {
             response.sendRedirect("resume");
             return;
         }
@@ -38,10 +38,10 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
             r.setFullName(fullName);
             for (ContactType type : ContactType.values()) {
                 String value = request.getParameter(type.name());
-                if (value != null && value.trim().length() != 0) {
-                    r.addContact(new Contact(type, value));
-                } else {
+                if (isEmpty(value)) {
                     r.getContacts().remove(type);
+                } else {
+                    r.addContact(new Contact(type, value));
                 }
             }
             for (SectionType type : SectionType.values()) {
@@ -100,50 +100,52 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
     private void fillParamsFromResume(HttpServletRequest request, Resume r) {
         for (SectionType type : SectionType.values()) {
             AbstractSection section = r.getSection(type);
-            if (section == null) {
-                switch (type) {
-                    case OBJECTIVE:
-                    case PERSONAL:
+            switch (type) {
+                case OBJECTIVE:
+                case PERSONAL:
+                    if (section == null) {
                         section = new SimpleTextSection();
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
+                    }
+                    request.setAttribute(type.name(), ((SimpleTextSection) section).getDescription());
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    if (section == null) {
                         section = new ListOfTextSection();
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
+                    }
+                    request.setAttribute(type.name(), String.join("\n", ((ListOfTextSection) section).getItems()));
+                    break;
+                case EXPERIENCE:
+                case EDUCATION:
+                    if (section == null) {
                         section = new ActivitySection();
-                }
-            }
-            if (type == SectionType.EDUCATION || type == SectionType.EXPERIENCE) {
-                List<String> listOrganizationName = new LinkedList<>();
-                List<String> listOrganizationUrl = new LinkedList<>();
-                List<String> listStartDate = new LinkedList<>();
-                List<String> listEndDate = new LinkedList<>();
-                List<String> listTitle = new LinkedList<>();
-                List<String> listDesc = new LinkedList<>();
-                for (Activity a : ((ActivitySection) section).getItems()) {
-                    listOrganizationName.add(a.getOrganization().getName());
-                    listOrganizationUrl.add(a.getOrganization().getUrl());
-                    listStartDate.add(a.getStartDate().format(DATE_FORMAT));
-                    listEndDate.add((a.getEndDate() != null) ? a.getEndDate().format(DATE_FORMAT) : "");
-                    listTitle.add(a.getTitle());
-                    listDesc.add(a.getDescription());
-                }
-                listOrganizationName.add("");
-                listOrganizationUrl.add("");
-                listStartDate.add("");
-                listEndDate.add("");
-                listTitle.add("");
-                listDesc.add("");
-                request.setAttribute(type.name() + "_organizationName", listOrganizationName);
-                request.setAttribute(type.name() + "_organizationUrl", listOrganizationUrl);
-                request.setAttribute(type.name() + "_startDate", listStartDate);
-                request.setAttribute(type.name() + "_endDate", listEndDate);
-                request.setAttribute(type.name() + "_title", listTitle);
-                request.setAttribute(type.name() + "_desc", listDesc);
-            } else {
-                request.setAttribute(type.name(), convertSimpleSectionToString(type, section));
+                    }
+                    List<String> listOrganizationName = new LinkedList<>();
+                    List<String> listOrganizationUrl = new LinkedList<>();
+                    List<String> listStartDate = new LinkedList<>();
+                    List<String> listEndDate = new LinkedList<>();
+                    List<String> listTitle = new LinkedList<>();
+                    List<String> listDesc = new LinkedList<>();
+                    for (Activity a : ((ActivitySection) section).getItems()) {
+                        listOrganizationName.add(a.getOrganization().getName());
+                        listOrganizationUrl.add(a.getOrganization().getUrl());
+                        listStartDate.add(a.getStartDate().format(DATE_FORMAT));
+                        listEndDate.add((a.getEndDate() != null) ? a.getEndDate().format(DATE_FORMAT) : "");
+                        listTitle.add(a.getTitle());
+                        listDesc.add(a.getDescription());
+                    }
+                    listOrganizationName.add("");
+                    listOrganizationUrl.add("");
+                    listStartDate.add("");
+                    listEndDate.add("");
+                    listTitle.add("");
+                    listDesc.add("");
+                    request.setAttribute(type.name() + "_organizationName", listOrganizationName);
+                    request.setAttribute(type.name() + "_organizationUrl", listOrganizationUrl);
+                    request.setAttribute(type.name() + "_startDate", listStartDate);
+                    request.setAttribute(type.name() + "_endDate", listEndDate);
+                    request.setAttribute(type.name() + "_title", listTitle);
+                    request.setAttribute(type.name() + "_desc", listDesc);
             }
         }
     }
@@ -152,13 +154,10 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
         switch (type) {
             case OBJECTIVE:
             case PERSONAL:
+                return !isEmpty(request.getParameter(type.name())) ? new SimpleTextSection(request.getParameter(type.name())) : null;
             case ACHIEVEMENT:
             case QUALIFICATIONS:
-                String value = request.getParameter(type.name());
-                if (value != null && value.trim().length() != 0) {
-                    return convertStringToSimpleSection(type, value.trim());
-                }
-                break;
+                return !isEmpty(request.getParameter(type.name())) ? new ListOfTextSection(request.getParameter(type.name()).split("\\s*\n+\\s*")) : null;
             case EXPERIENCE:
             case EDUCATION:
                 Organization org;
@@ -190,27 +189,7 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
         return null;
     }
 
-    private String convertSimpleSectionToString(SectionType sectionType, AbstractSection section) {
-        switch (sectionType) {
-            case OBJECTIVE:
-            case PERSONAL:
-                return ((SimpleTextSection) section).getDescription();
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                return String.join("\n", ((ListOfTextSection) section).getItems());
-        }
-        return null;
-    }
-
-    private AbstractSection convertStringToSimpleSection(SectionType sectionType, String value) {
-        switch (sectionType) {
-            case OBJECTIVE:
-            case PERSONAL:
-                return new SimpleTextSection(value);
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                return new ListOfTextSection(value.split("\\s*\n+\\s*"));
-        }
-        return null;
+    private boolean isEmpty(String str) {
+        return str == null || str.trim().length() == 0;
     }
 }
