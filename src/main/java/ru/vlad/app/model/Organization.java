@@ -48,6 +48,6 @@ public class Organization implements Serializable {
     }
 
     public String toString() {
-        return (url != null) ? '<' + name + '|' + url + '>' : name;
+        return (url != null) ? "<a href='" + url + "'>" + name + "</a>" : name;
     }
 }

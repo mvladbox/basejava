@@ -1,17 +1,17 @@
 package ru.vlad.app.model;
 
-//import java.time.YearMonth;
+import java.time.YearMonth;
 
 import java.util.*;
 
 public class ActivitySection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
-//    private static final Comparator<Activity> DESCENT = Comparator.comparing((Activity activity) ->
-//            (activity.getEndDate() == null) ? YearMonth.of(2099, 12) : activity.getEndDate())
-//            .reversed();
+    private static final Comparator<Activity> DESCENT = Comparator.comparing((Activity activity) ->
+            (activity.getEndDate() == null) ? YearMonth.of(2099, 12) : activity.getEndDate())
+            .reversed();
 
-    private final Set<Activity> items = new HashSet<>();  //TreeSet<>(/ESCENT);
+    private final Set<Activity> items = new HashSet<>();  //TreeSet<>(DESCENT);
 
     public ActivitySection() {
     }
@@ -25,7 +25,9 @@ public class ActivitySection extends AbstractSection {
     }
 
     public List<Activity> getItems() {
-        return new ArrayList<>(items);
+        List<Activity> sorted = new LinkedList<>(items);
+        sorted.sort(DESCENT);
+        return new ArrayList<>(sorted);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class ActivitySection extends AbstractSection {
     public String toString() {
         StringBuilder str = new StringBuilder();
         Organization org = null;
-        for (Activity item : items) {
+        for (Activity item : getItems()) {
             if (item.getOrganization() != org) {
                 org = item.getOrganization();
                 str.append("  ").append(org).append('\n');

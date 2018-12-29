@@ -86,10 +86,18 @@ public class SqlStorage implements Storage {
                 } while (rs.next());
                 return map;
             });
-            sqlHelper.query(conn, "SELECT * FROM contact ORDER BY resume_uuid",
-                    rs -> loadContacts(resumes.get(rs.getString("resume_uuid")), rs));
-            sqlHelper.query(conn, "SELECT * FROM section ORDER BY resume_uuid",
-                    rs -> loadSections(resumes.get(rs.getString("resume_uuid")), rs));
+            sqlHelper.query(conn, "SELECT * FROM contact ORDER BY resume_uuid", rs -> {
+                do {
+                    loadContacts(resumes.get(rs.getString("resume_uuid")), rs);
+                } while (!rs.isAfterLast());
+                return null;
+            });
+            sqlHelper.query(conn, "SELECT * FROM section ORDER BY resume_uuid", rs -> {
+                do {
+                    loadSections(resumes.get(rs.getString("resume_uuid")), rs);
+                } while (!rs.isAfterLast());
+                return null;
+            });
 
             return new ArrayList<>(resumes.values());
         });

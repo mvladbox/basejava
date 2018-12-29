@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Activity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/yyyy");
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/yyyy");
 
     private Organization organization;
     @XmlJavaTypeAdapter(YearMonthAdapter.class)
