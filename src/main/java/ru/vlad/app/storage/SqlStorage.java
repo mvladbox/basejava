@@ -12,7 +12,14 @@ public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        this.sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
+        this.sqlHelper = new SqlHelper(() -> {
+            Properties props = new Properties();
+            props.setProperty("user", dbUser);
+            props.setProperty("password", dbPassword);
+            props.setProperty("ssl", "true");
+            props.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
+            return DriverManager.getConnection(dbUrl, props);
+        });
     }
 
     @Override
