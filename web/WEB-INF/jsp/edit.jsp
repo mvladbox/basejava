@@ -75,11 +75,10 @@
                         <th></th>
                     <c:forEach var="i" begin="0" end="${requestScope[title].size() - 1}" varStatus="loop">
                         <tr id="${type.name()}${loop.index}" style="vertical-align: top">
-                            <td width="40%">
+                            <td width="25%">
                                 <dl>
-                                <%--<dt>С:</dt>--%>
                                     <dd><input type="text" name="${startDate}" value="<c:out value="${requestScope[startDate].get(i)}"/>" size="3" maxlength="7" placeholder="dd/yyyy"></dd>
-                                <%--<dt>по:</dt>--%>
+                                    &nbsp;&#8212;
                                     <dd><input type="text" name="${endDate}" value="<c:out value="${requestScope[endDate].get(i)}"/>" size="3" maxlength="7" placeholder="dd/yyyy"></dd>
                                 </dl>
                             </td>
@@ -91,7 +90,7 @@
                             </td>
                             <td>
                                 <dl>
-                                <dd><input type="text" name="${title}" size="45" value="<c:out value="${requestScope[title].get(i)}"/>"></dd>
+                                <dd><input type="text" name="${title}" size="63" value="<c:out value="${requestScope[title].get(i)}"/>"></dd>
                                 <dd><textarea name="${desc}" cols="65" rows="3">${requestScope[desc][i]}</textarea></dd>
                                 </dl>
                             </td>
